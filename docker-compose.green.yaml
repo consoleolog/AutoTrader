@@ -6,11 +6,11 @@ services:
     environment:
       TZ: "Asia/Seoul"
     image: autotrading:v1
-    command: ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "3000"]
+    command: ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "3001"]
     ports:
-      - "3000:3000"
+      - "3001:3000"
     expose:
-      - "3000"
+      - "3001"
     build: .
     healthcheck:
       test: >
@@ -27,11 +27,11 @@ services:
     environment:
       TZ: "Asia/Seoul"
     image: autotrading:v1
-    command: [ "uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000" ]
+    command: [ "uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8001" ]
     ports:
-      - "8000:8000"
+      - "8001:8000"
     expose:
-      - "8000"
+      - "8001"
     build: .
     healthcheck:
       test: >

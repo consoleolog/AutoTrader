@@ -60,8 +60,14 @@ class ExchangeModule:
     def get_balance(self, ticker: str) -> float:
         format_ticker = ticker.replace("/KRW", "")
         self.logger.info(format_ticker)
-        balance = self.exchange.fetch_balance()
-        return float(balance[format_ticker]['free'])
+        balances = self.exchange.fetch_balance()
+        try:
+            balance = balances[format_ticker]
+            if balance == 0:
+                return 0
+            return float(balance['free'])
+        except KeyError:
+            return 0
 
     def get_candles(self, ticker, timeframe: TimeFrame) -> DataFrame:
         ohlcv = self.exchange.fetch_ohlcv(symbol=ticker, timeframe=timeframe)

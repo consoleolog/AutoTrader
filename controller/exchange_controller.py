@@ -75,7 +75,6 @@ class ExchangeController:
         data = self.exchange_module.get_candles(ticker, timeframe)
         stage = data_utils.get_stage(data)
 
-        volume =  self.exchange_module.get_balance(ticker)
 
         up, mid, low = data[MACD.UP], data[MACD.MID], data[MACD.LOW]
         up_hist, mid_hist, low_hist = data[MACD.UP_HIST], data[MACD.MID_HIST], data[MACD.LOW_HIST]
@@ -83,6 +82,7 @@ class ExchangeController:
         if os.getenv("ID") == "bithumb":
             self.candle_service.save(ticker, timeframe, stage, data, up_slope, mid_slope, low_slope)
 
+        volume =  self.exchange_module.get_balance(ticker)
         # 매수 검토
         if volume == 0 and self.exchange_module.get_krw() > 8000:
             # 4, 5, 6 스테이지 일 때 피크아웃 확인
