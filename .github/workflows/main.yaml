@@ -1,0 +1,21 @@
+name: main-workflow
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  ssh:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: ssh to compute engine
+        uses: appleboy/ssh-action@master
+        with:
+          key: ${{ secrets.AUTOTRADING_KEY }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          script: |
+            cd cr 
+            cd BithumbAutoTrading
+            git pull https://github.com/consoleolog/BithumbAutoTrading.git main

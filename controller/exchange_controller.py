@@ -24,6 +24,9 @@ class ExchangeController:
             "AAVE/KRW": 0.015,
             "SOL/KRW": 0.02,
             "BSV/KRW": 0.1,
+            "YFI/KRW": 0.0006,
+            "BNB/KRW": 0.007,
+            "COMP/KRW": 0.06,
         }
 
 
