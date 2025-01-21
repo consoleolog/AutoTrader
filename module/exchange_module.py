@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 from pandas import DataFrame
 
@@ -9,6 +11,8 @@ from utils import data_utils
 class ExchangeModule:
     def __init__(self, exchange):
         self.exchange = exchange
+        if os.getenv("ID") == "upbit":
+            self.exchange.options['createMarketBuyOrderRequiresPrice'] = False
         self.logger = LoggerFactory().get_logger(__class__.__name__)
 
     def get_ticker_info(self, ticker):
