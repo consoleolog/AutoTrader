@@ -16,6 +16,10 @@ class ExchangeModule:
         info = tickers[ticker]
         return TickerInfoDTO.from_dict(info)
 
+    def get_krw(self):
+        balance = self.exchange.fetch_balance()
+        return float(balance["KRW"]['free'])
+
     def create_buy_order(self, ticker, amount):
         self.logger.info(f"""
         {'-'*30}
@@ -53,9 +57,11 @@ class ExchangeModule:
         avg_buy_price = self.get_avg_price(ticker)
         return (current_price - avg_buy_price) / avg_buy_price * 100.0
 
-    def get_balance(self, ticker) -> float:
+    def get_balance(self, ticker: str) -> float:
+        format_ticker = ticker.replace("/KRW", "")
+        self.logger.info(format_ticker)
         balance = self.exchange.fetch_balance()
-        return float(balance[ticker]['free'])
+        return float(balance[format_ticker]['free'])
 
     def get_candles(self, ticker, timeframe: TimeFrame) -> DataFrame:
         ohlcv = self.exchange.fetch_ohlcv(symbol=ticker, timeframe=timeframe)

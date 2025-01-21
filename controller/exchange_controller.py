@@ -84,7 +84,7 @@ class ExchangeController:
             self.candle_service.save(ticker, timeframe, stage, data, up_slope, mid_slope, low_slope)
 
         # 매수 검토
-        if volume == 0 and self.exchange_module.get_balance("KRW") > 8000:
+        if volume == 0 and self.exchange_module.get_krw() > 8000:
             # 4, 5, 6 스테이지 일 때 피크아웃 확인
             if stage == Stage.STABLE_DECREASE or stage == Stage.END_OF_DECREASE or stage == Stage.START_OF_INCREASE:
                 peekout = all(
@@ -122,4 +122,3 @@ class ExchangeController:
                     return
             else:
                 return
-
