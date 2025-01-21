@@ -1,0 +1,7 @@
+/log/
+/.idea/
+/__pycache__/
+/**/__pycache__/
+/.github/
+.gitignore
+/__test__/

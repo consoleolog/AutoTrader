@@ -96,6 +96,10 @@ class ExchangeController:
                 if peekout and up_slope > low_slope > 30 :
                     res = self.exchange_module.create_buy_order(ticker, self.price_keys[ticker])
                     self.logger.info(res)
+                else:
+                    return
+            else:
+                return
         # 매도 검토
         else:
 
@@ -112,11 +116,10 @@ class ExchangeController:
                     if profit > 0.1:
                         res = self.exchange_module.create_sell_order(ticker, self.exchange_module.get_balance(ticker.replace("/KRW", "")))
                         self.logger.info(res)
-
-
-
-
-
-
-
+                    else:
+                        return
+                else:
+                    return
+            else:
+                return
 
