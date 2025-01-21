@@ -29,7 +29,9 @@ class IntegrationExchangeModuleTest(unittest.TestCase):
         ticker = "BTC"
         b= self.exchange_module.get_balance(ticker)
         self.logger.info(b)
-        self.logger.debug(self.exchange_module.get_balance("KRW") )
+        ticker = "KRW-AAVE"
+        self.logger.info(ticker.replace("KRW-", ""))
+        self.logger.debug(self.exchange_module.get_balance("BCH"))
 
     def test_get_candles(self):
         ticker = "ETH/KRW"

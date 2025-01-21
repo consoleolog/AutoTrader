@@ -52,25 +52,13 @@ def add_job(tickers):
         )
 
 scheduler = BackgroundScheduler()
-if os.getenv("ID") == "upbit":
-    tickers = [
-        "KRW-BTC",
-        "KRW-ETH",
-        "KRW-BCH",
-        "KRW-AAVE",
-        "KRW-SOL",
-        "KRW-BSV",
-    ]
-    add_job(tickers)
-
-elif os.getenv("ID") == "bithumb":
-    tickers = [
-        "BTC/KRW",
-        "ETH/KRW",
-        "BCH/KRW",
-        "AAVE/KRW",
-        "SOL/KRW",
-        "BSV/KRW",
-    ]
-    add_job(tickers)
+tickers = [
+    "BTC/KRW",
+    "ETH/KRW",
+    "BCH/KRW",
+    "AAVE/KRW",
+    "SOL/KRW",
+    "BSV/KRW",
+]
+add_job(tickers)
 
