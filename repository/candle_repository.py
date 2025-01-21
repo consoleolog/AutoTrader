@@ -57,6 +57,7 @@ class CandleRepository:
                     candle_macd.low_slope,
                     candle_macd.signal
                 ))
+                self.connection.commit()
         except DatabaseError as e:
             self.logger.error(f"Transaction failed: {str(e)}")
             raise
