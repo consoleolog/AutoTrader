@@ -8,10 +8,11 @@ IMAGE_ID=$(sudo docker images -q $IMAGE_NAME)
 
 if [ -z "$EXIST_BLUE" ]; then
   echo "blue up"
-  sudo docker-compose -p $BITHUMB_CONTAINER_NAME-blue -f docker-compose.blue.yaml up -d --build
+  sudo docker-compose -p autotrading-
 
-  BEFORE_COMPOSE_COLOR="green"
-  AFTER_COMPOSE_COLOR="blue"
+  sudo docker-compose -p autotrading-blue -f docker-compose.blue.yaml up -d --build
+
+
 else
   echo "green up"
   sudo docker-compose -p $BITHUMB_CONTAINER_NAME-green -f docker-compose.green.yaml up -d --build
