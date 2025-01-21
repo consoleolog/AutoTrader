@@ -22,28 +22,28 @@ class CandleService:
             candle_id=candle_id,
             datetime=datetime.now(),
             ticker=ticker,
-            close=data["close"].iloc[-1],
+            close=float(data["close"].iloc[-1]),
             timeframe=timeframe,
         )
         candle_ema = CandleEMA(
             candle_id=candle_id,
-            short=data[EMA.SHORT].iloc[-1],
-            mid=data[EMA.MID].iloc[-1],
-            long=data[EMA.LONG].iloc[-1],
+            short=float(data[EMA.SHORT].iloc[-1]),
+            mid=float(data[EMA.MID].iloc[-1]),
+            long=float(data[EMA.LONG].iloc[-1]),
             stage=stage
         )
         candle_macd = CandleMACD(
             candle_id=candle_id,
-            up=data[MACD.UP].iloc[-1],
-            mid=data[MACD.MID].iloc[-1],
-            low=data[MACD.LOW].iloc[-1],
-            up_hist=data[MACD.UP_HIST].iloc[-1],
-            mid_hist=data[MACD.MID_HIST].iloc[-1],
-            low_hist=data[MACD.LOW_HIST].iloc[-1],
-            up_slope=up_slope,
-            mid_slope=mid_slope,
-            low_slope=low_slope,
-            signal=data[MACD.SIGNAL].iloc[-1],
+            up=float(data[MACD.UP].iloc[-1]),
+            mid=float(data[MACD.MID].iloc[-1]),
+            low=float(data[MACD.LOW].iloc[-1]),
+            up_hist=float(data[MACD.UP_HIST].iloc[-1]),
+            mid_hist=float(data[MACD.MID_HIST].iloc[-1]),
+            low_hist=float(data[MACD.LOW_HIST].iloc[-1]),
+            up_slope=float(up_slope),
+            mid_slope=float(mid_slope),
+            low_slope=float(low_slope),
+            signal=float(data[MACD.SIGNAL].iloc[-1]),
         )
         self.candle_repository.insert_many(candle, candle_ema, candle_macd)
 
