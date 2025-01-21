@@ -59,7 +59,6 @@ class ExchangeModule:
 
     def get_balance(self, ticker: str) -> float:
         format_ticker = ticker.replace("/KRW", "")
-        self.logger.info(format_ticker)
         balances = self.exchange.fetch_balance()
         try:
             balance = balances[format_ticker]
