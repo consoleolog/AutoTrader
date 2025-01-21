@@ -19,3 +19,4 @@ jobs:
             cd cr 
             cd BithumbAutoTrading
             git pull https://github.com/consoleolog/BithumbAutoTrading.git main
+            sh deploy.sh

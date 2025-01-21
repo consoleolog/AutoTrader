@@ -74,4 +74,5 @@ elif os.getenv("ID") == "bithumb":
         "BNB/KRW",
         "COMP/KRW"
     ]
+    add_job(tickers)
 
