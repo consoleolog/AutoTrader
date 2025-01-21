@@ -17,14 +17,25 @@ class ExchangeController:
         self.exchange_module = exchange_module
         self.candle_service = candle_service
         self.logger = LoggerFactory().get_logger(__class__.__name__)
-        self.price_keys = {
-            "BTC/KRW": 0.00005,
-            "ETH/KRW": 0.0015,
-            "BCH/KRW": 0.011,
-            "AAVE/KRW": 0.015,
-            "SOL/KRW": 0.02,
-            "BSV/KRW": 0.1,
-        }
+        if os.getenv("ID") == "bithumb":
+            self.price_keys = {
+                "BTC/KRW": 0.00005,
+                "ETH/KRW": 0.0015,
+                "BCH/KRW": 0.011,
+                "AAVE/KRW": 0.015,
+                "SOL/KRW": 0.02,
+                "BSV/KRW": 0.1,
+            }
+        elif os.getenv("ID") == "upbit":
+            self.price_keys = {
+                "KRW-BTC": 0.00005,
+                "KRW-ETH": 0.0015,
+                "KRW-BCH": 0.011,
+                "KRW-AAVE": 0.015,
+                "KRW-SOL": 0.02,
+                "KRW-BSV": 0.1,
+            }
+
 
     def _print_report(self, ticker, up, mid, low, stage):
         self.logger.info(f"""
@@ -74,7 +85,7 @@ class ExchangeController:
         data = self.exchange_module.get_candles(ticker, timeframe)
         stage = data_utils.get_stage(data)
 
-        volume = self.exchange_module.get_balance(ticker.replace("/KRW", ""))
+        volume =  self.exchange_module.get_balance(ticker.replace("/KRW", "")) if os.getenv("ID") == "upbit" else self.exchange_module.get_balance(ticker.replace("KRW-", ""))
 
         up, mid, low = data[MACD.UP], data[MACD.MID], data[MACD.LOW]
         up_hist, mid_hist, low_hist = data[MACD.UP_HIST], data[MACD.MID_HIST], data[MACD.LOW_HIST]
@@ -102,7 +113,6 @@ class ExchangeController:
                 return
         # 매도 검토
         else:
-
             # 1, 2, 3 스테이지 일 때 기울기 확인
             if stage == Stage.STABLE_INCREASE or stage == Stage.END_OF_INCREASE or stage == Stage.START_OF_DECREASE:
                 decrease = all([

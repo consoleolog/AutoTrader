@@ -45,9 +45,7 @@ class CandleService:
             low_slope=low_slope,
             signal=data[MACD.SIGNAL].iloc[-1],
         )
-        self.candle_repository.insert_candle(candle)
-        self.candle_repository.insert_candle_ema(candle_ema)
-        self.candle_repository.insert_candle_macd(candle_macd)
+        self.candle_repository.insert_many(candle, candle_ema, candle_macd)
 
 
 

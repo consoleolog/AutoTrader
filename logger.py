@@ -35,7 +35,7 @@ class LoggerFactory:
             return formatter.format(record)
 
     LOG_FOLDER = f"{os.getcwd()}/log"
-    DEFAULT_FILE_NAME = "auto_trading.log"
+    DEFAULT_FILE_NAME = f"{os.getenv('ID')}.log"
     LOG_FILE = f"{LOG_FOLDER}/{DEFAULT_FILE_NAME}"
     LOG_FILE_SIZE = 2097152
     BACKUP_COUNT = 10

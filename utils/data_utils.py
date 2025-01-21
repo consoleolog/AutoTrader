@@ -36,8 +36,8 @@ def get_slope(data) -> Optional[float]:
     return slope
 
 def create_sub_data(data: DataFrame) -> DataFrame:
-    data[EMA.SHORT] = data["close"].ewm(span=10).mean()
-    data[EMA.MID] = data["close"].ewm(span=20).mean()
+    data[EMA.SHORT] = data["close"].ewm(span=14).mean()
+    data[EMA.MID] = data["close"].ewm(span=30).mean()
     data[EMA.LONG] = data["close"].ewm(span=60).mean()
 
     data[MACD.UP] = data[EMA.SHORT] - data[EMA.MID]
