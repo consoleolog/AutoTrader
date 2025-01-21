@@ -31,6 +31,12 @@ class ExchangeModule:
         Ticker : {ticker}
         Amount : {amount}
         {'-'*30}""")
+        if os.getenv("ID") == "upbit":
+            return self.exchange.create_market_buy_order(
+                symbol=ticker,
+                amount=amount,
+                params={"price": self.get_current_price(ticker)},
+            )
         return self.exchange.create_market_buy_order(
             symbol=ticker,
             amount=amount
