@@ -16,10 +16,10 @@ class CandleRepository:
             with self.connection.cursor() as cursor:
                 # 각 테이블에 데이터 삽입
                 cursor.execute("""
-                        INSERT INTO CANDLE (
-                            CANDLE_ID, DATETIME, TICKER, CLOSE, TIMEFRAME
-                        ) VALUES (%s, %s, %s, %s, %s);
-                        """, (
+                    INSERT INTO CANDLE (
+                        CANDLE_ID, DATETIME, TICKER, CLOSE, TIMEFRAME
+                    ) VALUES (%s, %s, %s, %s, %s);
+                    """, (
                     candle.candle_id,
                     candle.datetime,
                     candle.ticker,
@@ -28,10 +28,10 @@ class CandleRepository:
                 ))
 
                 cursor.execute("""
-                        INSERT INTO CANDLE_EMA (
-                            CANDLE_ID, SHORT, MID, LONG, STAGE
-                        ) VALUES (%s, %s, %s, %s, %s);
-                        """, (
+                    INSERT INTO CANDLE_EMA (
+                        CANDLE_ID, SHORT, MID, LONG, STAGE
+                    ) VALUES (%s, %s, %s, %s, %s);
+                    """, (
                     candle_ema.candle_id,
                     candle_ema.short,
                     candle_ema.mid,
@@ -40,11 +40,11 @@ class CandleRepository:
                 ))
 
                 cursor.execute("""
-                        INSERT INTO CANDLE_MACD (
-                            CANDLE_ID, UP, MID, LOW, UP_HIST, MID_HIST, LOW_HIST, 
-                            UP_SLOPE, MID_SLOPE, LOW_SLOPE, SIGNAL
-                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-                        """, (
+                    INSERT INTO CANDLE_MACD (
+                        CANDLE_ID, UP, MID, LOW, UP_HIST, MID_HIST, LOW_HIST, 
+                        UP_SLOPE, MID_SLOPE, LOW_SLOPE, SIGNAL
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+                    """, (
                     candle_macd.candle_id,
                     candle_macd.up,
                     candle_macd.mid,
@@ -59,8 +59,11 @@ class CandleRepository:
                 ))
                 self.connection.commit()
         except DatabaseError as e:
-            self.logger.error(f"Transaction failed: {str(e)}")
-            raise
+            self.connection.rollback()  # 트랜잭션 롤백
+            self.logger.error(f"Transaction failed and rolled back: {str(e)}")
+        except Exception as e:
+            self.connection.rollback()  # 일반적인 에러에도 롤백
+            self.logger.error(f"Unexpected error: {str(e)}")
 
     def insert_candle(self, candle: Candle):
         try:
