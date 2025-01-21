@@ -8,11 +8,7 @@ from repository.candle_repository import CandleRepository
 from service.candle_service import CandleService
 from controller.exchange_controller import ExchangeController
 
-load_dotenv(dotenv_path=".env.bithumb")
-with open(f"{os.getcwd()}/bithumb.key") as f:
-    lines = f.readlines()
-    api_key = lines[0].strip()
-    api_secret = lines[1].strip()
+load_dotenv()
 exchange = getattr(ccxt, os.getenv("ID"))({
     'apiKey': os.getenv("ACCESS_KEY"),
     'secret': os.getenv("SECRET_KEY")
