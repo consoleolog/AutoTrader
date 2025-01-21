@@ -1,7 +1,7 @@
 import psycopg2
 from sqlalchemy import create_engine
 
-with open("D:\PycharmProjects\cr\BithumbAutoTrading\database.key") as f:
+with open("database.key") as f:
     lines = f.readlines()
     user = lines[0].strip()
     password = lines[1].strip()
