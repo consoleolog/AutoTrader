@@ -1,5 +1,3 @@
-import os
-
 from logger import LoggerFactory
 from model.const.macd import MACD
 from model.const.stage import Stage

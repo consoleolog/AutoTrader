@@ -14,9 +14,12 @@ class ExchangeModule:
         self.logger = LoggerFactory().get_logger(__class__.__name__)
 
     def get_ticker_info(self, ticker):
-        tickers = self.exchange.fetch_tickers()
-        info = tickers[ticker]
-        return TickerInfoDTO.from_dict(info)
+        try:
+            info = self.exchange.fetch_ticker(ticker)
+            return TickerInfoDTO.from_dict(info)
+        except Exception as e:
+            self.logger.error(f"Error in get_ticker_info: {e}")
+            raise
 
     def get_krw(self):
         balance = self.exchange.fetch_balance()
@@ -53,8 +56,15 @@ class ExchangeModule:
         )
 
     def get_current_price(self, ticker) -> float:
-        ticker_info_dto = self.get_ticker_info(ticker)
-        return float(ticker_info_dto.close)
+        try:
+            ticker_info_dto = self.get_ticker_info(ticker)
+            return float(ticker_info_dto.close)
+        except KeyError as e:
+            self.logger.error(f"Ticker '{ticker}' not found: {e}")
+            raise
+        except Exception as e:
+            self.logger.error(f"Unexpected error in get_current_price: {e}")
+            raise
 
     def get_avg_price(self, ticker) -> float:
         ticker_info_dto = self.get_ticker_info(ticker)

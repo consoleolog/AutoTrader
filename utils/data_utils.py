@@ -10,9 +10,6 @@ from model.const.stage import Stage
 def get_stage(data: DataFrame):
     try:
         ema_short, ema_middle, ema_long  = data.iloc[-1][EMA.SHORT], data.iloc[-1][EMA.MID] , data.iloc[-1][EMA.LONG]
-        print(ema_short)
-        print(ema_middle)
-        print(ema_long)
         if ema_short > ema_middle > ema_long:
             return Stage.STABLE_INCREASE
         elif ema_middle > ema_short > ema_long:
