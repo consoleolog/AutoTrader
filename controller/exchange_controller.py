@@ -104,17 +104,17 @@ class ExchangeController:
                 return
         # 매도 검토
         else:
+            self._print_sell_report(ticker, up, mid, low, stage)
             # 1, 2, 3 스테이지 일 때 기울기 확인
             if stage == Stage.STABLE_INCREASE or stage == Stage.END_OF_INCREASE or stage == Stage.START_OF_DECREASE:
                 decrease = all([
                     data_utils.get_slope(up.tolist()[-3:]) < 0,
                     data_utils.get_slope(mid.tolist()[-3:]) < 0
                 ])
-                self._print_sell_report(ticker, up, mid, low, stage)
                 if decrease or (data_utils.get_slope(up.tolist()[-3:]) < data_utils.get_slope(low.tolist()[-3:])):
                     profit = self.exchange_module.get_profit(ticker)
                     self._print_profit(ticker, profit)
-                    if profit > 0.1:
+                    if profit > 0.05:
                         res = self.exchange_module.create_sell_order(ticker, self.exchange_module.get_balance(ticker))
                         self.logger.info(res)
                     else:
