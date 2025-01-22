@@ -11,7 +11,7 @@ from model.dto.ticker_info_dto import TickerInfoDTO
 from module.exchange_module import ExchangeModule
 from utils import data_utils
 
-KEY_PATH = f"{os.getcwd()}/../../upbit.key"
+KEY_PATH = f"{os.getcwd()}/../../bithumb.key"
 
 class ExchangeModuleTest(unittest.TestCase):
     def setUp(self):
@@ -19,7 +19,7 @@ class ExchangeModuleTest(unittest.TestCase):
             lines = f.readlines()
             api_key = lines[0].strip()
             api_secret = lines[1].strip()
-            self.exchange = getattr(ccxt, "upbit")({
+            self.exchange = getattr(ccxt, "bithumb")({
                 'apiKey': api_key,  # API Key
                 'secret': api_secret  # API Secret
             })

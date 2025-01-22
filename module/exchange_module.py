@@ -15,7 +15,8 @@ class ExchangeModule:
 
     def get_ticker_info(self, ticker):
         try:
-            info = self.exchange.fetch_ticker(ticker)
+            params = {"market": ticker}
+            info = self.exchange.fetch_ticker(ticker, params)
             return TickerInfoDTO.from_dict(info)
         except Exception as e:
             self.logger.error(f"Error in get_ticker_info: {e}")
