@@ -1,3 +1,5 @@
+import os
+
 from logger import LoggerFactory
 from model.const.macd import MACD
 from model.const.stage import Stage
@@ -78,6 +80,9 @@ class ExchangeController:
         up, mid, low = data[MACD.UP], data[MACD.MID], data[MACD.LOW]
         up_hist, mid_hist, low_hist = data[MACD.UP_HIST], data[MACD.MID_HIST], data[MACD.LOW_HIST]
         up_slope, mid_slope, low_slope = data_utils.get_slope(up.tolist()[-6:]), data_utils.get_slope(mid.tolist()[-6:]), data_utils.get_slope(low.tolist()[-6:])
+
+        if os.getenv("ID") == "bithumb":
+            self.candle_service.save(ticker,timeframe,stage,data,up_slope,mid_slope,low_slope)
 
         volume =  self.exchange_module.get_balance(ticker)
         # 매수 검토

@@ -93,7 +93,7 @@ class CandleRepository:
         except psycopg2.Error as e:
             self.connection.rollback()  # 트랜잭션 롤백
             print(f"Error inserting into CANDLE: {e}")
-            raise
+            pass
 
     def insert_candle_ema(self, candle_ema: CandleEMA):
         try:
@@ -123,7 +123,7 @@ class CandleRepository:
         except psycopg2.Error as e:
             self.connection.rollback()  # 트랜잭션 롤백
             print(f"Error inserting into CANDLE_EMA: {e}")
-            raise
+            pass
 
     def insert_candle_macd(self, candle_macd: CandleMACD):
         try:
@@ -171,4 +171,4 @@ class CandleRepository:
         except psycopg2.Error as e:
             self.connection.rollback()  # 트랜잭션 롤백
             print(f"Error inserting into CANDLE_MACD: {e}")
-            raise
+            pass
