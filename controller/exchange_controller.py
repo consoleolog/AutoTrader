@@ -29,7 +29,6 @@ class ExchangeController:
             "COMP/KRW": 0.06,
         }
 
-
     def _print_report(self, ticker, up, mid, low, stage):
         self.logger.info(f"""
         {'-' * 50}
@@ -59,9 +58,9 @@ class ExchangeController:
         매도 검토
         Ticker : {ticker}
         Stage  : {stage}
-        Up Slope  : {data_utils.get_slope(up.tolist()[-6:])}
-        Mid Slope : {data_utils.get_slope(mid.tolist()[-6:])}
-        Low Slope : {data_utils.get_slope(low.tolist()[-6:])}
+        Up Slope  : {data_utils.get_slope(up.tolist()[-3:])}
+        Mid Slope : {data_utils.get_slope(mid.tolist()[-3:])}
+        Low Slope : {data_utils.get_slope(low.tolist()[-3:])}
         {'-' * 50}
         """)
 
@@ -77,7 +76,6 @@ class ExchangeController:
     def trade(self, ticker: str, timeframe: TimeFrame):
         data = self.exchange_module.get_candles(ticker, timeframe)
         stage = data_utils.get_stage(data)
-
 
         up, mid, low = data[MACD.UP], data[MACD.MID], data[MACD.LOW]
         up_hist, mid_hist, low_hist = data[MACD.UP_HIST], data[MACD.MID_HIST], data[MACD.LOW_HIST]
@@ -95,7 +93,7 @@ class ExchangeController:
                      low_hist[-6:].min() < low_hist.iloc[-1]])
 
                 self._print_buy_report(ticker, up, mid, low, stage)
-                if peekout and up_slope > 30 and mid_slope > 30 and low_slope > 30:
+                if peekout and up_slope >  mid_slope >  low_slope > 0:
                     res = self.exchange_module.create_buy_order(ticker, self.price_keys[ticker])
                     self.logger.info(res)
                 else:
@@ -104,9 +102,9 @@ class ExchangeController:
                 return
         # 매도 검토
         else:
-            self._print_sell_report(ticker, up, mid, low, stage)
             # 1, 2, 3 스테이지 일 때 기울기 확인
             if stage == Stage.STABLE_INCREASE or stage == Stage.END_OF_INCREASE or stage == Stage.START_OF_DECREASE:
+                self._print_sell_report(ticker, up, mid, low, stage)
                 decrease = all([
                     data_utils.get_slope(up.tolist()[-3:]) < 0,
                     data_utils.get_slope(mid.tolist()[-3:]) < 0
