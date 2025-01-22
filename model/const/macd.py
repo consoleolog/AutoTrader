@@ -1,16 +1,16 @@
 
 
 class MACD:
-    UP = "up"
-    MID = "mid"
-    LOW = "low"
+    UP = "MACD_UP"
+    MID = "MACD_MID"
+    LOW = "MACD_LOW"
 
-    UP_SLOPE = "up_slope"
-    MID_SLOPE = "mid_slope"
-    LOW_SLOPE = "low_slope"
+    UP_SLOPE = "UP_SLOPE"
+    MID_SLOPE = "MID_SLOPE"
+    LOW_SLOPE = "LOW_SLOPE"
 
-    SIGNAL = "signal"
+    SIGNAL = "SIGNAL"
 
-    UP_HIST = "up_hist"
-    MID_HIST = "mid_hist"
-    LOW_HIST = "low_hist"
+    UP_HIST = "UP_HIST"
+    MID_HIST = "MID_HIST"
+    LOW_HIST = "LOW_HIST"

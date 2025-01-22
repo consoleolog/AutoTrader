@@ -9,7 +9,10 @@ from model.const.stage import Stage
 
 def get_stage(data: DataFrame):
     try:
-        ema_short,ema_middle,ema_long  = data.iloc[-1][EMA.SHORT], data.iloc[-1][EMA.MID] , data.iloc[-1][EMA.LONG]
+        ema_short, ema_middle, ema_long  = data.iloc[-1][EMA.SHORT], data.iloc[-1][EMA.MID] , data.iloc[-1][EMA.LONG]
+        print(ema_short)
+        print(ema_middle)
+        print(ema_long)
         if ema_short > ema_middle > ema_long:
             return Stage.STABLE_INCREASE
         elif ema_middle > ema_short > ema_long:
@@ -36,9 +39,9 @@ def get_slope(data) -> Optional[float]:
     return slope
 
 def create_sub_data(data: DataFrame) -> DataFrame:
-    data[EMA.SHORT] = data["close"].ewm(span=14).mean()
-    data[EMA.MID] = data["close"].ewm(span=30).mean()
-    data[EMA.LONG] = data["close"].ewm(span=60).mean()
+    data[EMA.SHORT] = data["close"].ewm(span=14,min_periods=14, adjust=False).mean()
+    data[EMA.MID] = data["close"].ewm(span=30,min_periods=30, adjust=False).mean()
+    data[EMA.LONG] = data["close"].ewm(span=60,min_periods=60, adjust=False).mean()
 
     data[MACD.UP] = data[EMA.SHORT] - data[EMA.MID]
     data[MACD.MID] = data[EMA.SHORT] - data[EMA.LONG]

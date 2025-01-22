@@ -1,9 +1,9 @@
 
 
 class EMA:
-    SHORT = "short"
-    MID = "mid"
-    LONG = "long"
+    SHORT = "EMA_SHORT"
+    MID = "EMA_MID"
+    LONG = "EMA_LONG"
 
     def __init__(
         self,

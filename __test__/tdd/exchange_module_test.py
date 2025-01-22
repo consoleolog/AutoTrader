@@ -1,5 +1,7 @@
 import os
+import time
 import unittest
+from datetime import datetime
 
 import ccxt
 import pandas as pd
@@ -7,6 +9,7 @@ import pandas as pd
 from logger import LoggerFactory
 from model.dto.ticker_info_dto import TickerInfoDTO
 from module.exchange_module import ExchangeModule
+from utils import data_utils
 
 KEY_PATH = f"{os.getcwd()}/../../bithumb.key"
 
@@ -52,7 +55,7 @@ class ExchangeModuleTest(unittest.TestCase):
         self.logger.info(type(ticker_info_dto.close))
 
     def test_get_candles(self):
-        ohlcv = self.exchange.fetch_ohlcv(symbol="BTC/KRW", timeframe='4h')
+        ohlcv = self.exchange.fetch_ohlcv(symbol="ETH/KRW", timeframe='5m')
 
         df = pd.DataFrame(ohlcv, columns=['datetime', 'open', 'high', 'low', 'close', 'volume'])
         pd_ts = pd.to_datetime(df['datetime'], utc=True, unit='ms')
@@ -60,9 +63,12 @@ class ExchangeModuleTest(unittest.TestCase):
         pd_ts = pd_ts.dt.tz_localize(None)
         df.set_index(pd_ts, inplace=True)
         df = df[['datetime','close']]
-        self.logger.info(df)
-        self.logger.info(df['close'])
-        self.logger.info(type(df))
+        self.logger.debug(df.iloc[-1])
+
+        data = data_utils.create_sub_data(df)
+        stage = data_utils.get_stage(data)
+        self.logger.debug(stage)
+
 
     def test_get_balances(self):
         balances = self.exchange.fetch_balance()
