@@ -31,13 +31,21 @@ class ExchangeModuleTest(unittest.TestCase):
         self.logger = LoggerFactory().get_logger(__class__.__name__)
         self.exchange_module = ExchangeModule(self.exchange)
 
+    def test_log_all_markets(self):
+        try:
+            markets = self.exchange.load_markets()
+            for market_id, market_data in markets.items():
+                self.logger.info(f"Market ID: {market_id}, Market Data: {market_data}")
+        except Exception as e:
+            self.logger.error(f"Error while loading markets: {e}")
+
     def test_get_tickers(self):
         tickers = self.exchange.fetch_tickers()
         symbols = tickers.keys()
         krw_symbols = [x for x in symbols if x.endswith('KRW')]
         print(krw_symbols)
         print(len(krw_symbols))
-        self.logger.info(self.exchange_module.get_ticker_info("SOL/KRW"))
+        self.logger.info(self.exchange_module.get_ticker_info("BTC/KRW"))
 
     def test_get_profit(self):
         ticker = "BTC/KRW"

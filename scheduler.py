@@ -54,7 +54,6 @@ def add_job(tickers):
 scheduler = BackgroundScheduler()
 if os.getenv("ID") == "upbit":
     tickers = [
-        "BTC/KRW",
         "ETH/KRW",
         "BCH/KRW",
         "AAVE/KRW",
