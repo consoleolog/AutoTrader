@@ -11,7 +11,7 @@ from model.dto.ticker_info_dto import TickerInfoDTO
 from module.exchange_module import ExchangeModule
 from utils import data_utils
 
-KEY_PATH = f"{os.getcwd()}/../../bithumb.key"
+KEY_PATH = f"{os.getcwd()}/../../upbit.key"
 
 class ExchangeModuleTest(unittest.TestCase):
     def setUp(self):
@@ -19,7 +19,7 @@ class ExchangeModuleTest(unittest.TestCase):
             lines = f.readlines()
             api_key = lines[0].strip()
             api_secret = lines[1].strip()
-            self.exchange = getattr(ccxt, "bithumb")({
+            self.exchange = getattr(ccxt, "upbit")({
                 'apiKey': api_key,  # API Key
                 'secret': api_secret  # API Secret
             })
@@ -37,7 +37,7 @@ class ExchangeModuleTest(unittest.TestCase):
         krw_symbols = [x for x in symbols if x.endswith('KRW')]
         print(krw_symbols)
         print(len(krw_symbols))
-        self.logger.info(self.exchange_module.get_ticker_info("ETH/KRW"))
+        self.logger.info(self.exchange_module.get_ticker_info("SOL/KRW"))
 
     def test_get_profit(self):
         ticker = "BTC/KRW"
