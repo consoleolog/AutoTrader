@@ -13,4 +13,4 @@ pyjwt~=2.9.0
 pydantic~=2.9.2
 sqlalchemy~=2.0.36
 matplotlib~=3.9.2
-ccxt~=4.4.46
+ccxt==4.4.42
