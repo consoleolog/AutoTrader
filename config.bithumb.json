@@ -23,7 +23,7 @@
     },
     "server": {
         "verbosity": 2,
-        "interval": 10 
+        "interval": 7
     },
     "trade_repository": {
         "type": "TradeRepository",

@@ -1,4 +1,5 @@
-import os 
+import os
+
 import ccxt
 import pandas as pd
 import pyupbit
@@ -15,8 +16,8 @@ class Exchange:
         if service == "upbit":
             self.exchange = ccxt.upbit(
                 config={
-                    "apiKey": env.upbit['accessKey'],
-                    "secret": env.upbit['secretKey'],
+                    "apiKey": env.upbit["accessKey"],
+                    "secret": env.upbit["secretKey"],
                     "enableRateLimit": True,
                 }
             )
@@ -24,8 +25,8 @@ class Exchange:
         elif service == "bithumb":
             self.exchange = ccxt.bithumb(
                 config={
-                    "apiKey": env.bithumb['accessKey'],
-                    "secret": env.bithumb['secretKey'],
+                    "apiKey": env.bithumb["accessKey"],
+                    "secret": env.bithumb["secretKey"],
                     "enableRateLimit": True,
                 }
             )

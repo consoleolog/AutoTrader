@@ -5,7 +5,7 @@ import psycopg2
 from sqlalchemy import create_engine
 
 from config import env
-from models import TradeInfo, TradeDetail
+from models import TradeDetail, TradeInfo
 
 
 def catch_db_exception(func):
@@ -60,22 +60,26 @@ class TradeRepository:
     def update_trade_detail(self, service, ticker, rsi_over=None, stochastic_over=None):
         cur = self.conn.cursor()
         if rsi_over is not None:
-            cur.execute("""
+            cur.execute(
+                """
             UPDATE TRADE_DETAIL
             SET RSI_OVER = %s,
                 UPDATED_AT = NOW()
             WHERE TICKER = %s
             AND SERVICE = %s
-            """,(rsi_over, ticker, service)
-                        )
+            """,
+                (rsi_over, ticker, service),
+            )
         if stochastic_over is not None:
-            cur.execute("""
+            cur.execute(
+                """
             UPDATE TRADE_DETAIL
             SET STOCHASTIC_OVER = %s,
                 UPDATED_AT = NOW()
             WHERE TICKER = %s
             AND SERVICE = %s
-            """,(stochastic_over, ticker, service)
+            """,
+                (stochastic_over, ticker, service),
             )
         self.conn.commit()
         cur.close()

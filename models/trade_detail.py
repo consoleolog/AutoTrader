@@ -1,12 +1,12 @@
 class TradeDetail:
     def __init__(
-            self,
-            service=None,
-            ticker=None,
-            rsi_over=None,
-            stochastic_over=None,
-            created_at=None,
-            updated_at=None,
+        self,
+        service=None,
+        ticker=None,
+        rsi_over=None,
+        stochastic_over=None,
+        created_at=None,
+        updated_at=None,
     ):
         self.service = service
         self.ticker = ticker

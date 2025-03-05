@@ -5,11 +5,11 @@ from dotenv import load_dotenv
 load_dotenv()
 upbit = {
     "accessKey": os.getenv("UPBIT_ACCESS_KEY"),
-    "secretKey": os.getenv("UPBIT_SECRET_KEY")
+    "secretKey": os.getenv("UPBIT_SECRET_KEY"),
 }
 bithumb = {
     "accessKey": os.getenv("BITHUMB_ACCESS_KEY"),
-    "secretKey": os.getenv("BITHUMB_SECRET_KEY")
+    "secretKey": os.getenv("BITHUMB_SECRET_KEY"),
 }
 
 database = {

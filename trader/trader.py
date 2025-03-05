@@ -35,17 +35,33 @@ class Trader:
         )
         rsi, prev_rsi = data[const.RSI.V].iloc[-1], data[const.RSI.V].iloc[-2]
         if rsi < 30:
-            self.trade_repository.update_trade_detail(self.service, ticker, rsi_over=True)
+            self.trade_repository.update_trade_detail(
+                self.service, ticker, rsi_over=True
+            )
         elif rsi > 70:
-            self.trade_repository.update_trade_detail(self.service, ticker, rsi_over=False)
+            self.trade_repository.update_trade_detail(
+                self.service, ticker, rsi_over=False
+            )
 
-        k_slow, d_slow = data[const.STOCHASTIC.K_SLOW].iloc[-1], data[const.STOCHASTIC.D_SLOW].iloc[-2]
+        k_slow, d_slow = (
+            data[const.STOCHASTIC.K_SLOW].iloc[-1],
+            data[const.STOCHASTIC.D_SLOW].iloc[-2],
+        )
         if k_slow < 30 and d_slow < 30:
-            self.trade_repository.update_trade_detail(self.service, ticker, stochastic_over=True)
+            self.trade_repository.update_trade_detail(
+                self.service, ticker, stochastic_over=True
+            )
         elif k_slow > 70 and d_slow > 70:
-            self.trade_repository.update_trade_detail(self.service, ticker, stochastic_over=False)
+            self.trade_repository.update_trade_detail(
+                self.service, ticker, stochastic_over=False
+            )
 
-        result["GOLDEN_CROSS"], result["RSI"], result["K_SLOW"], result["D_SLOW"] = golden_cross, float(rsi), float(k_slow), float(d_slow)
+        result["GOLDEN_CROSS"], result["RSI"], result["K_SLOW"], result["D_SLOW"] = (
+            golden_cross,
+            float(rsi),
+            float(k_slow),
+            float(d_slow),
+        )
         trade_detail = self.trade_repository.get_detail(self.service, ticker)
         if (
             golden_cross
@@ -88,7 +104,9 @@ class Trader:
     def buy_and_update(self, ticker):
         trade_info = self.trade_repository.get_info(self.service, ticker)
         if trade_info.status == "bid":
-            price = (float(trade_info.price) + self.exchange.get_current_price(ticker)) / 2
+            price = (
+                float(trade_info.price) + self.exchange.get_current_price(ticker)
+            ) / 2
             self.trade_repository.update_trade_info(self.service, ticker, price, "bid")
         else:
             self.trade_repository.update_trade_info(

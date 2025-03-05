@@ -12,11 +12,11 @@
     "trader": {
         "verbosity": 1,
         "save_dir": "saved/",
-        "price": 20000
+        "price": 30000
     },
     "server": {
         "verbosity": 2,
-        "interval": 10 
+        "interval": 5
     },
     "trade_repository": {
         "type": "TradeRepository",
