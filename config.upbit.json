@@ -1,0 +1,29 @@
+{
+    "name" :"UpbitAutoTrader",
+    "tickers": [
+        "ETH/KRW",
+        "BTC/KRW"
+    ],
+    "save_dir": "saved/",
+    "trader": {
+        "verbosity": 1,
+        "save_dir": "saved/",
+        "price": 20000
+    },
+    "server": {
+        "verbosity": 2,
+        "interval": 10 
+    },
+    "trade_repository": {
+        "type": "TradeRepository",
+        "args": {}
+    },
+    "exchange": {
+        "type": "Exchange",
+        "args": {}
+    },
+    "data_generator": {
+        "type": "DataGenerator",
+        "args": {}
+    }
+}

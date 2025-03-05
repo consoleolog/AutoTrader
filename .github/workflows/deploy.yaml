@@ -1,0 +1,22 @@
+name: blue green cd
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  SSH:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: ssh to compute engine
+        uses: appleboy/ssh-action@master
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          script: |
+            cd ~/cr/AutoTrader
+            git pull https://github.com/consoleolog/AutoTrader.git
+            chmod +x deploy.sh
+            ./deploy.sh

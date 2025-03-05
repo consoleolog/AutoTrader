@@ -1,0 +1,36 @@
+{
+    "name" :"AutoTrader",
+    "tickers": [
+        "ETH/KRW",
+        "BTC/KRW"
+    ],
+    "save_dir": "saved/",
+    "trader": {
+        "verbosity": 1,
+        "save_dir": "saved/",
+        "price_key": {
+            "BTC/KRW": 0.0002,
+            "ETH/KRW": 0.0090,
+            "BCH/KRW": 0.044,
+            "AAVE/KRW": 0.030,
+            "SOL/KRW": 0.08,
+            "ENS/KRW": 1
+        }
+    },
+    "server": {
+        "verbosity": 2,
+        "interval": 10 
+    },
+    "trade_repository": {
+        "type": "TradeRepository",
+        "args": {}
+    },
+    "exchange": {
+        "type": "Exchange",
+        "args": {}
+    },
+    "data_generator": {
+        "type": "DataGenerator",
+        "args": {}
+    }
+}
