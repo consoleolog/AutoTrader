@@ -4,7 +4,7 @@ WORKDIR /workspace
 
 RUN apt-get update && apt-get install -y tzdata 
 
-RUN pip install --uprade pip 
+RUN pip install --upgrade pip 
 
 COPY ./requirements.txt ./
 
