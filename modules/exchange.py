@@ -10,14 +10,13 @@ from models import TickerInfo
 class Exchange:
     def __init__(self, service):
         self.service = service
-        os.environ["ID"] = service
         msg_no_service = "unavailable of this service '{}'".format(service)
         assert service in ["bithumb", "upbit"], msg_no_service
         if service == "upbit":
             self.exchange = ccxt.upbit(
                 config={
-                    "apiKey": env.accessKey,
-                    "secret": env.secretKey,
+                    "apiKey": env.upbit['accessKey'],
+                    "secret": env.upbit['secretKey'],
                     "enableRateLimit": True,
                 }
             )
@@ -25,8 +24,8 @@ class Exchange:
         elif service == "bithumb":
             self.exchange = ccxt.bithumb(
                 config={
-                    "apiKey": env.accessKey,
-                    "secret": env.secretKey,
+                    "apiKey": env.bithumb['accessKey'],
+                    "secret": env.secretKey['secertKey'],
                     "enableRateLimit": True,
                 }
             )

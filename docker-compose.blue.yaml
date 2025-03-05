@@ -1,5 +1,6 @@
 services:
   upbit-blue:
+    container_name: upbit-blue
     image: "autotrader"
     build: 
       context: . 
@@ -15,6 +16,7 @@ services:
     command: ["python", "trade.py", "-c", "config.upbit.json", "-p", "8000","--sp", "5", "--mp", "8", "--lp", "20", "--t", "15m", "--rsi", "14", "--s", "upbit"]
   
   bithumb-blue:
+    container_name: bithumb-blue
     image: "autotrader"
     build: 
       context: . 
