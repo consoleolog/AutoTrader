@@ -13,11 +13,11 @@
         "verbosity": 1,
         "save_dir": "saved/",
         "price_key": {
-            "BTC/KRW": 0.0002,
-            "ETH/KRW": 0.0090,
-            "BCH/KRW": 0.044,
-            "AAVE/KRW": 0.030,
-            "SOL/KRW": 0.08,
+            "BTC/KRW": 0.0001,
+            "ETH/KRW": 0.0040,
+            "BCH/KRW": 0.033,
+            "AAVE/KRW": 0.025,
+            "SOL/KRW": 0.06,
             "ENS/KRW": 1
         }
     },

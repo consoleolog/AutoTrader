@@ -1,8 +1,12 @@
 {
     "name" :"UpbitAutoTrader",
     "tickers": [
+        "BTC/KRW",
         "ETH/KRW",
-        "BTC/KRW"
+        "BCH/KRW",
+        "SOL/KRW",
+        "AAVE/KRW",
+        "BSV/KRW"
     ],
     "save_dir": "saved/",
     "trader": {
