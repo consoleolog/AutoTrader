@@ -34,10 +34,22 @@ class Trader:
             ]
         )
         rsi, prev_rsi = data[const.RSI.V].iloc[-1], data[const.RSI.V].iloc[-2]
-        result["GOLDEN_CROSS"], result["RSI"] = golden_cross, float(rsi)
+        if rsi < 30:
+            self.trade_repository.update_trade_detail(self.service, ticker, rsi_over=True)
+        elif rsi > 70:
+            self.trade_repository.update_trade_detail(self.service, ticker, rsi_over=False)
+
+        k_slow, d_slow = data[const.STOCHASTIC.K_SLOW].iloc[-1], data[const.STOCHASTIC.D_SLOW].iloc[-2]
+        if k_slow < 30 and d_slow < 30:
+            self.trade_repository.update_trade_detail(self.service, ticker, stochastic_over=True)
+        elif k_slow > 70 and d_slow > 70:
+            self.trade_repository.update_trade_detail(self.service, ticker, stochastic_over=False)
+
+        result["GOLDEN_CROSS"], result["RSI"], result["K_SLOW"], result["D_SLOW"] = golden_cross, float(rsi), float(k_slow), float(d_slow)
+        trade_detail = self.trade_repository.get_detail(self.service, ticker)
         if (
             golden_cross
-            and 35 >= rsi > prev_rsi
+            and trade_detail.stochastic_over
             and self.exchange.get_krw() > 30000
             and stage in [4, 5, 6]
         ):
@@ -74,9 +86,14 @@ class Trader:
         self.exchange.create_sell_order(ticker, balance)
 
     def buy_and_update(self, ticker):
-        self.trade_repository.update_trade_info(
-            self.service, ticker, self.exchange.get_current_price(ticker), "bid"
-        )
+        trade_info = self.trade_repository.get_info(self.service, ticker)
+        if trade_info.status == "bid":
+            price = (float(trade_info.price) + self.exchange.get_current_price(ticker)) / 2
+            self.trade_repository.update_trade_info(self.service, ticker, price, "bid")
+        else:
+            self.trade_repository.update_trade_info(
+                self.service, ticker, self.exchange.get_current_price(ticker), "bid"
+            )
         if self.service == "upbit":
             price = self.config["trader"]["price"]
             self.exchange.create_buy_order(ticker, price)
@@ -99,6 +116,8 @@ class Trader:
     def init_trade_info(self, tickers):
         if len(tickers) == 1:
             self.trade_repository.init_trade_info(self.service, tickers[0])
+            self.trade_repository.init_trade_detail(self.service, tickers[0])
         else:
             for ticker in tickers:
+                self.trade_repository.init_trade_detail(self.service, ticker)
                 self.trade_repository.init_trade_info(self.service, ticker)
