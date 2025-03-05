@@ -39,6 +39,7 @@ def main(config):
     async def lifespan(app: FastAPI):
         logger.info("START UP")
         trader.init_trade_info(tickers)
+        scheduler.start()
         yield
         logger.info("SHUT DOWN")
 
