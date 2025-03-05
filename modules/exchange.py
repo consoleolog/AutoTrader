@@ -25,7 +25,7 @@ class Exchange:
             self.exchange = ccxt.bithumb(
                 config={
                     "apiKey": env.bithumb['accessKey'],
-                    "secret": env.bithumb['secertKey'],
+                    "secret": env.bithumb['secretKey'],
                     "enableRateLimit": True,
                 }
             )
