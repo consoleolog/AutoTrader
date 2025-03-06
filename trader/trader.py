@@ -77,20 +77,16 @@ class Trader:
             profit = self.get_profit(ticker)
             result["profit"] = profit
             stochastic_dc = isin(data[const.STOCHASTIC.DC], True)
-            macd_dc = all(
+            peekout = all(
                 [
-                    isin(data[const.MACD.S_DC], True),
-                    isin(data[const.MACD.M_DC], True),
-                    isin(data[const.MACD.L_DC], True),
+                    trade_detail.stochastic_over == False,
+                    trade_detail.rsi_over == False,
                 ]
             )
-            if profit < 0 and stage == 1 and (stochastic_dc and macd_dc):
+            if profit < 0 and peekout and stochastic_dc and stage == 1:
                 self.sell_and_update(ticker, balance)
                 return result
-            if profit > 0.1 and stochastic_dc and stage in [1, 2, 3]:
-                self.sell_and_update(ticker, balance)
-                return result
-            if profit > 0.1 and (stochastic_dc or macd_dc):
+            if profit > 0.1 and peekout and stochastic_dc and stage in [1, 2, 3]:
                 self.sell_and_update(ticker, balance)
                 return result
         return result
