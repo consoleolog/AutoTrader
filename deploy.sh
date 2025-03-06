@@ -1,8 +1,6 @@
 #!/bin/bash
 
-IMAGE_NAME=autotrader
 UPBIT_CONTAINER_NAME=upbit
-BITHUMB_CONTAINER_NAME=bithumb
 
 EXIST_UPBIT_BLUE=$(sudo docker-compose -p "$UPBIT_CONTAINER_NAME-blue" -f docker-compose.blue.yaml ps | grep Up)
 
@@ -22,7 +20,7 @@ else
     UPBIT_AFTER_COMPOSE_COLOR="green"
 fi
 
-IMAGE_ID=$(sudo docker images -q $IMAGE_NAME)
+#IMAGE_ID=$(sudo docker images -q $IMAGE_NAME)
 
 sleep 5
 
@@ -32,5 +30,5 @@ if [ -n "$UPBIT_EXIST_AFTER" ]; then
     echo "------------------"
     echo " upbit $UPBIT_BEFORE_COMPOSE_COLOR down"
     echo "------------------"
-    sudo docker rmi "$IMAGE_ID"
+#    sudo docker rmi "$IMAGE_ID"
 fi
