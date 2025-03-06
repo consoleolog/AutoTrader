@@ -6,24 +6,31 @@
         "BCH/KRW",
         "AAVE/KRW",
         "SOL/KRW",
-        "ENS/KRW"
+        "ENS/KRW",
+        "YFI/KRW",
+        "XRP/KRW",
+        "DOGE/KRW"
     ],
     "save_dir": "saved/",
     "trader": {
         "verbosity": 1,
         "save_dir": "saved/",
         "price_key": {
-            "BTC/KRW": 0.0001,
-            "ETH/KRW": 0.0040,
-            "BCH/KRW": 0.033,
-            "AAVE/KRW": 0.025,
-            "SOL/KRW": 0.06,
-            "ENS/KRW": 1
+            "BTC/KRW": 0.0002,
+            "ETH/KRW": 0.008,
+            "BCH/KRW": 0.05,
+            "AAVE/KRW": 0.08,
+            "SOL/KRW": 0.12,
+            "ENS/KRW": 0.8,
+            "YFI/KRW": 0.003,
+            "BNB/KRW": 0.03,
+            "XRP/KRW": 7,
+            "DOGE/KRW": 80
         }
     },
     "server": {
         "verbosity": 2,
-        "interval": 10
+        "interval": 15
     },
     "trade_repository": {
         "type": "TradeRepository",
