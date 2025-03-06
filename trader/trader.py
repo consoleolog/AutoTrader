@@ -116,14 +116,13 @@ class Trader:
             price = self.config["trader"]["price"]
             self.exchange.create_buy_order(ticker, price)
         elif self.service == "bithumb":
-            price_keys = self.config["trader"]["price_keys"]
+            price_keys = self.config["trader"]["price_key"]
             self.exchange.create_buy_order(ticker, price_keys[ticker])
 
     def loop(self, tickers):
         with ThreadPoolExecutor(max_workers=4) as executor:
             futures = [executor.submit(self.trading, t) for t in tickers]
-        result = [pprint(f.result()) for f in futures]
-        self.logger.info(result)
+        [pprint(f.result()) for f in futures]
 
     def get_profit(self, ticker):
         trade_info = self.trade_repository.get_info(self.service, ticker)
