@@ -44,9 +44,9 @@ class Trader:
                 self.service, ticker, ("stochastic_over", False)
             )
         macd_sgc, macd_mgc, macd_lgc = (
-            data[const.MACD.S_GC].iloc[-1],
-            data[const.MACD.M_GC].iloc[-1],
-            data[const.MACD.L_GC].iloc[-1],
+            isin(data[const.MACD.S_GC], True),
+            isin(data[const.MACD.M_GC], True),
+            isin(data[const.MACD.L_GC], True),
         )
         if macd_sgc:
             self.trade_repository.update_trade_detail(
@@ -61,9 +61,9 @@ class Trader:
                 self.service, ticker, ("macd_long_over", True)
             )
         macd_sdc, macd_mdc, macd_ldc = (
-            data[const.MACD.S_DC].iloc[-1],
-            data[const.MACD.M_DC].iloc[-1],
-            data[const.MACD.L_DC].iloc[-1],
+            isin(data[const.MACD.S_DC], True),
+            isin(data[const.MACD.M_DC], True),
+            isin(data[const.MACD.L_DC], True),
         )
         if macd_sdc:
             self.trade_repository.update_trade_detail(
@@ -127,10 +127,10 @@ class Trader:
             # -*- 손절 -*-
 
             # -*- 익절 -*-
-            if profit > 0.1 and peekout and stage == 1:
+            if peekout and stage == 1:
                 self.sell_and_update(ticker, balance)
                 return result
-            if profit > 0.1 and stochastic_dc and stage in [2, 3, 4, 5, 6]:
+            if stochastic_dc and stage in [2, 3, 4, 5, 6]:
                 self.sell_and_update(ticker, balance)
                 return result
             # -*- 익절 -*-
