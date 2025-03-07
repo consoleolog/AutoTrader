@@ -89,13 +89,11 @@ class Trader:
         )
 
         trade_detail = self.trade_repository.get_detail(self.service, ticker)
-        golden_cross = all(
-            [
-                isin(data[const.MACD.S_GC], True),
-                isin(data[const.MACD.M_GC], True),
-                isin(data[const.MACD.L_GC], True),
-            ]
-        )
+        golden_cross = all([
+            trade_detail.macd_short_over == True,
+            trade_detail.macd_mid_over == True,
+            trade_detail.macd_long_over == True,
+        ])
         if (
             golden_cross
             and trade_detail.stochastic_over
@@ -110,18 +108,14 @@ class Trader:
             profit = self.get_profit(ticker)
             result["profit"] = profit
             stochastic_dc = isin(data[const.STOCHASTIC.DC], True)
-            peekout = all(
-                [trade_detail.stochastic_over == False, trade_detail.rsi_over == False]
-            )
-            dead_cross = all(
-                [
-                    isin(data[const.MACD.S_DC], True),
-                    isin(data[const.MACD.M_DC], True),
-                    isin(data[const.MACD.L_DC], True),
-                ]
-            )
+            peekout = all([trade_detail.stochastic_over == False, trade_detail.rsi_over == False])
+            dead_cross = all([
+                trade_detail.macd_short_over == False,
+                trade_detail.macd_mid_over == False,
+                trade_detail.macd_long_over == False,
+            ])
             # -*- 손절 -*-
-            if dead_cross and stage not in [1, 2, 3]:
+            if profit < 0 and dead_cross and stage not in [1, 2, 3]:
                 self.sell_and_update(ticker, balance)
                 return result
             # -*- 손절 -*-
@@ -153,6 +147,9 @@ class Trader:
             self.trade_repository.update_trade_info(
                 self.service, ticker, self.exchange.get_current_price(ticker), "bid"
             )
+        self.trade_repository.update_trade_detail(self.service, ticker, ("macd_short_over", None))
+        self.trade_repository.update_trade_detail(self.service, ticker, ("macd_mid_over", None))
+        self.trade_repository.update_trade_detail(self.service, ticker, ("macd_long_over", None))
         if self.service == "upbit":
             price = self.config["trader"]["price"]
             self.exchange.create_buy_order(ticker, price)
