@@ -129,7 +129,7 @@ class Trader:
             if peekout and stage == 1:
                 self.sell_and_update(ticker, balance)
                 return result
-            if (stochastic_dc or dead_cross) and stage in [2, 3, 4, 5, 6]:
+            if profit > 0.1 and (stochastic_dc or dead_cross) and stage in [2, 3, 4, 5, 6]:
                 self.sell_and_update(ticker, balance)
                 return result
             # -*- 익절 -*-
@@ -147,6 +147,12 @@ class Trader:
         )
         self.trade_repository.update_trade_detail(
             self.service, ticker, ("macd_long_over", None)
+        )
+        self.trade_repository.update_trade_detail(
+            self.service, ticker, ("rsi_over", None)
+        )
+        self.trade_repository.update_trade_detail(
+            self.service, ticker, ("stochastic_over", None)
         )
         self.exchange.create_sell_order(ticker, balance)
 
@@ -169,6 +175,12 @@ class Trader:
         )
         self.trade_repository.update_trade_detail(
             self.service, ticker, ("macd_long_over", None)
+        )
+        self.trade_repository.update_trade_detail(
+            self.service, ticker, ("rsi_over", None)
+        )
+        self.trade_repository.update_trade_detail(
+            self.service, ticker, ("stochastic_over", None)
         )
         if self.service == "upbit":
             price = self.config["trader"]["price"]
