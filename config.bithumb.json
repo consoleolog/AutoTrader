@@ -30,7 +30,7 @@
     },
     "server": {
         "verbosity": 2,
-        "interval": 15
+        "interval": 30
     },
     "trade_repository": {
         "type": "TradeRepository",
