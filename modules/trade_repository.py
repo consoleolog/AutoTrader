@@ -57,32 +57,22 @@ class TradeRepository:
         cur.close()
 
     @catch_db_exception
-    def update_trade_detail(self, service, ticker, rsi_over=None, stochastic_over=None):
+    def update_trade_detail(self, service, ticker, data=None):
         cur = self.conn.cursor()
-        if rsi_over is not None:
+        if data is not None:
+            col, val = data
             cur.execute(
-                """
-            UPDATE TRADE_DETAIL
-            SET RSI_OVER = %s,
+                f"""
+            UPDATE TRADE_DETAIL 
+            SET {col.upper()} = %s,
                 UPDATED_AT = NOW()
-            WHERE TICKER = %s
-            AND SERVICE = %s
+            WHERE TRADE_DETAIL.TICKER = %s 
+            AND TRADE_DETAIL.SERVICE = %s 
             """,
-                (rsi_over, ticker, service),
+                (val, ticker, service),
             )
-        if stochastic_over is not None:
-            cur.execute(
-                """
-            UPDATE TRADE_DETAIL
-            SET STOCHASTIC_OVER = %s,
-                UPDATED_AT = NOW()
-            WHERE TICKER = %s
-            AND SERVICE = %s
-            """,
-                (stochastic_over, ticker, service),
-            )
-        self.conn.commit()
-        cur.close()
+            self.conn.commit()
+            cur.close()
 
     @catch_db_exception
     def update_trade_info(self, service, ticker, price, status):
@@ -134,3 +124,8 @@ class TradeRepository:
             query, self.engine, params={"service": service, "ticker": ticker}
         ).iloc[-1]
         return TradeDetail.from_df(data)
+
+
+if __name__ == "__main__":
+    repo = TradeRepository()
+    repo.update_trade_detail("upbit", "ETH/KRW", ("macd_short_over", True))

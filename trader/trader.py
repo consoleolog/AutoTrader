@@ -21,48 +21,81 @@ class Trader:
         self.data_generator = data_generator
         self.trade_repository = trade_repository
 
+    def update_args(self, ticker, data):
+        rsi, prev_rsi = data[const.RSI.V].iloc[-1], data[const.RSI.V].iloc[-2]
+        if rsi < 30:
+            self.trade_repository.update_trade_detail(
+                self.service, ticker, ("rsi_over", True)
+            )
+        if rsi > 70:
+            self.trade_repository.update_trade_detail(
+                self.service, ticker, ("rsi_over", False)
+            )
+        k_slow, d_slow = (
+            data[const.STOCHASTIC.K_SLOW].iloc[-1],
+            data[const.STOCHASTIC.D_SLOW].iloc[-1],
+        )
+        if k_slow < 30 and d_slow < 30:
+            self.trade_repository.update_trade_detail(
+                self.service, ticker, ("stochastic_over", True)
+            )
+        if k_slow > 70 and d_slow > 70:
+            self.trade_repository.update_trade_detail(
+                self.service, ticker, ("stochastic_over", False)
+            )
+        macd_sgc, macd_mgc, macd_lgc = (
+            data[const.MACD.S_GC].iloc[-1],
+            data[const.MACD.M_GC].iloc[-1],
+            data[const.MACD.L_GC].iloc[-1],
+        )
+        if macd_sgc:
+            self.trade_repository.update_trade_detail(
+                self.service, ticker, ("macd_short_over", True)
+            )
+        if macd_mgc:
+            self.trade_repository.update_trade_detail(
+                self.service, ticker, ("macd_mid_over", True)
+            )
+        if macd_lgc:
+            self.trade_repository.update_trade_detail(
+                self.service, ticker, ("macd_long_over", True)
+            )
+        macd_sdc, macd_mdc, macd_ldc = (
+            data[const.MACD.S_DC].iloc[-1],
+            data[const.MACD.M_DC].iloc[-1],
+            data[const.MACD.L_DC].iloc[-1],
+        )
+        if macd_sdc:
+            self.trade_repository.update_trade_detail(
+                self.service, ticker, ("macd_short_over", False)
+            )
+        if macd_mdc:
+            self.trade_repository.update_trade_detail(
+                self.service, ticker, ("macd_mid_over", False)
+            )
+        if macd_ldc:
+            self.trade_repository.update_trade_detail(
+                self.service, ticker, ("macd_long_over", False)
+            )
+        return rsi, k_slow, d_slow
+
     def trading(self, ticker):
         result = {}
         data = self.data_generator.load(ticker, self.exchange)
         stage = self.data_generator.get_stage(data)
         result["info"] = f"{ticker.upper()} | {stage}"
+        result["rsi"], result["k_slow"], result["d_slow"] = self.update_args(
+            ticker, data
+        )
+
+        trade_detail = self.trade_repository.get_detail(self.service, ticker)
         golden_cross = all(
             [
-                isin(data[const.MACD.S_GC], True),
-                isin(data[const.MACD.M_GC], True),
-                isin(data[const.MACD.L_GC], True),
+                trade_detail.macd_short_over,
+                trade_detail.macd_mid_over,
+                trade_detail.macd_long_over,
             ]
         )
-        rsi, prev_rsi = data[const.RSI.V].iloc[-1], data[const.RSI.V].iloc[-2]
-        if rsi < 30:
-            self.trade_repository.update_trade_detail(
-                self.service, ticker, rsi_over=True
-            )
-        elif rsi > 70:
-            self.trade_repository.update_trade_detail(
-                self.service, ticker, rsi_over=False
-            )
-
-        k_slow, d_slow = (
-            data[const.STOCHASTIC.K_SLOW].iloc[-1],
-            data[const.STOCHASTIC.D_SLOW].iloc[-2],
-        )
-        if k_slow < 30 and d_slow < 30:
-            self.trade_repository.update_trade_detail(
-                self.service, ticker, stochastic_over=True
-            )
-        elif k_slow > 70 and d_slow > 70:
-            self.trade_repository.update_trade_detail(
-                self.service, ticker, stochastic_over=False
-            )
-
-        result["GOLDEN_CROSS"], result["RSI"], result["K_SLOW"], result["D_SLOW"] = (
-            golden_cross,
-            float(rsi),
-            float(k_slow),
-            float(d_slow),
-        )
-        trade_detail = self.trade_repository.get_detail(self.service, ticker)
         if (
             golden_cross
             and trade_detail.stochastic_over
@@ -78,17 +111,29 @@ class Trader:
             result["profit"] = profit
             stochastic_dc = isin(data[const.STOCHASTIC.DC], True)
             peekout = all(
+                [trade_detail.stochastic_over == False, trade_detail.rsi_over == False]
+            )
+            dead_cross = all(
                 [
-                    trade_detail.stochastic_over == False,
-                    trade_detail.rsi_over == False,
+                    trade_detail.macd_short_over == False,
+                    trade_detail.macd_mid_over == False,
+                    trade_detail.macd_long_over == False,
                 ]
             )
-            if profit < 0 and peekout and stochastic_dc and stage == 1:
+            # -*- 손절 -*-
+            if dead_cross and stage not in [1, 2, 3]:
                 self.sell_and_update(ticker, balance)
                 return result
-            if profit > 0.1 and peekout and stochastic_dc and stage in [1, 2, 3]:
+            # -*- 손절 -*-
+
+            # -*- 익절 -*-
+            if profit > 0.1 and peekout and stage == 1:
                 self.sell_and_update(ticker, balance)
                 return result
+            if profit > 0.1 and stochastic_dc and stage in [2, 3, 4, 5, 6]:
+                self.sell_and_update(ticker, balance)
+                return result
+            # -*- 익절 -*-
         return result
 
     def sell_and_update(self, ticker, balance):
