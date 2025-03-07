@@ -100,7 +100,6 @@ class Trader:
             golden_cross
             and trade_detail.stochastic_over
             and self.exchange.get_krw() > 30000
-            and stage in [4, 5, 6]
         ):
             self.buy_and_update(ticker)
             return result
@@ -121,7 +120,7 @@ class Trader:
                 ]
             )
             # -*- 손절 -*-
-            if profit < 0 and dead_cross and stage not in [1, 2, 3]:
+            if profit < 0 and (stochastic_dc or dead_cross) and stage not in [1, 2, 3]:
                 self.sell_and_update(ticker, balance)
                 return result
             # -*- 손절 -*-
@@ -130,7 +129,7 @@ class Trader:
             if peekout and stage == 1:
                 self.sell_and_update(ticker, balance)
                 return result
-            if stochastic_dc and stage in [2, 3, 4, 5, 6]:
+            if (stochastic_dc or dead_cross) and stage in [2, 3, 4, 5, 6]:
                 self.sell_and_update(ticker, balance)
                 return result
             # -*- 익절 -*-
