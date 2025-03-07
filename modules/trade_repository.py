@@ -114,6 +114,9 @@ class TradeRepository:
                D.TICKER,
                D.RSI_OVER,
                D.STOCHASTIC_OVER,
+               D.MACD_SHORT_OVER,
+               D.MACD_MID_OVER,
+               D.MACD_LONG_OVER, 
                D.CREATED_AT,
                D.UPDATED_AT
         FROM TRADE_DETAIL AS D
