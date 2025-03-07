@@ -91,9 +91,9 @@ class Trader:
         trade_detail = self.trade_repository.get_detail(self.service, ticker)
         golden_cross = all(
             [
-                trade_detail.macd_short_over,
-                trade_detail.macd_mid_over,
-                trade_detail.macd_long_over,
+                isin(data[const.MACD.S_GC], True),
+                isin(data[const.MACD.M_GC], True),
+                isin(data[const.MACD.L_GC], True),
             ]
         )
         if (
@@ -115,9 +115,9 @@ class Trader:
             )
             dead_cross = all(
                 [
-                    trade_detail.macd_short_over == False,
-                    trade_detail.macd_mid_over == False,
-                    trade_detail.macd_long_over == False,
+                    isin(data[const.MACD.S_DC], True),
+                    isin(data[const.MACD.M_DC], True),
+                    isin(data[const.MACD.L_DC], True),
                 ]
             )
             # -*- 손절 -*-
