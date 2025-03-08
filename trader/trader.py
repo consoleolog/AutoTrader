@@ -132,7 +132,7 @@ class Trader:
                 ]
             )
             # -*- 손절 -*-
-            if profit < 0 and (stochastic_dc or dead_cross) and stage not in [1, 2, 3]:
+            if profit < 0 and (stochastic_dc or dead_cross) and stage == 1:
                 self.sell_and_update(ticker, balance)
                 return result
             # -*- 손절 -*-
