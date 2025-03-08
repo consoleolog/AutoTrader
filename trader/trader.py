@@ -96,13 +96,25 @@ class Trader:
                 trade_detail.macd_long_over == True,
             ]
         )
-        if (
-            golden_cross
-            and trade_detail.stochastic_over
-            and self.exchange.get_krw() > 30000
-        ):
-            self.buy_and_update(ticker)
-            return result
+        trade_into = self.trade_repository.get_info(self.service, ticker)
+        #
+        if trade_into.status != "bid":
+            if (
+                golden_cross
+                and trade_detail.rsi_over
+                and trade_detail.stochastic_over
+                and self.exchange.get_krw() > 30000
+            ):
+                self.buy_and_update(ticker)
+                return result
+        else:
+            if (
+                golden_cross
+                and trade_detail.stochastic_over
+                and self.exchange.get_krw() > 30000
+            ):
+                self.buy_and_update(ticker)
+                return result
 
         balance = self.exchange.get_balance(ticker)
         if balance != 0:
@@ -129,7 +141,11 @@ class Trader:
             if peekout and stage == 1:
                 self.sell_and_update(ticker, balance)
                 return result
-            if profit > 0.1 and (stochastic_dc or dead_cross) and stage in [2, 3, 4, 5, 6]:
+            if (
+                profit > 0.1
+                and (stochastic_dc or dead_cross)
+                and stage in [2, 3, 4, 5, 6]
+            ):
                 self.sell_and_update(ticker, balance)
                 return result
             # -*- 익절 -*-
