@@ -1,4 +1,3 @@
-import time
 from functools import wraps
 
 import pandas as pd
@@ -63,6 +62,7 @@ class TradeRepository:
         ).iloc[-1]
         return TradeInfo.from_df(data)
 
+    @catch_db_exception
     def rsi_over(self, rsi_info: RsiInfo):
         cur = self.conn.cursor()
         cur.execute(
@@ -85,6 +85,7 @@ class TradeRepository:
         self.conn.commit()
         cur.close()
 
+    @catch_db_exception
     def rsi_cross(self, rsi_info: RsiInfo):
         cur = self.conn.cursor()
         cur.execute(
@@ -107,6 +108,7 @@ class TradeRepository:
         self.conn.commit()
         cur.close()
 
+    @catch_db_exception
     def macd_short(self, macd_info: MacdInfo):
         cur = self.conn.cursor()
         cur.execute(
@@ -127,6 +129,7 @@ class TradeRepository:
         self.conn.commit()
         cur.close()
 
+    @catch_db_exception
     def macd_mid(self, macd_info: MacdInfo):
         cur = self.conn.cursor()
         cur.execute(
@@ -147,6 +150,7 @@ class TradeRepository:
         self.conn.commit()
         cur.close()
 
+    @catch_db_exception
     def macd_long(self, macd_info: MacdInfo):
         cur = self.conn.cursor()
         cur.execute(
@@ -167,6 +171,7 @@ class TradeRepository:
         self.conn.commit()
         cur.close()
 
+    @catch_db_exception
     def stochastic_over(self, stochastic_info: StochasticInfo):
         cur = self.conn.cursor()
         cur.execute(
@@ -191,6 +196,7 @@ class TradeRepository:
         self.conn.commit()
         cur.close()
 
+    @catch_db_exception
     def stochastic_cross(self, stochastic_info: StochasticInfo):
         cur = self.conn.cursor()
         cur.execute(
@@ -215,6 +221,7 @@ class TradeRepository:
         self.conn.commit()
         cur.close()
 
+    @catch_db_exception
     def macd_cross(self, macd_info: MacdInfo):
         cur = self.conn.cursor()
         cur.execute(
