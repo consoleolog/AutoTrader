@@ -26,7 +26,7 @@ class Trader:
             float(data[const.STOCHASTIC.K_SLOW].iloc[-1]),
             float(data[const.STOCHASTIC.D_SLOW].iloc[-1]),
         )
-        datetime = data["datetime"].iloc[-1]
+        datetime = int(data["datetime"].iloc[-1])
         if k_slow < 30 and d_slow < 30:
             stochastic_info = StochasticInfo(
                 ticker=ticker,
@@ -77,7 +77,7 @@ class Trader:
         rsi = float(data[const.RSI.V].iloc[-1])
         rsi_gc = data[const.RSI.GC].iloc[-1]
         rsi_dc = data[const.RSI.DC].iloc[-1]
-        datetime = data["datetime"].iloc[-1]
+        datetime = int(data["datetime"].iloc[-1])
         if rsi < 30:
             rsi_info = RsiInfo(
                 ticker=ticker,
@@ -127,7 +127,7 @@ class Trader:
             data[const.MACD.M_DC].iloc[-1],
             data[const.MACD.L_DC].iloc[-1],
         )
-        datetime = data["datetime"].iloc[-1]
+        datetime = int(data["datetime"].iloc[-1])
 
         # MACD Short
         if short_golden:
