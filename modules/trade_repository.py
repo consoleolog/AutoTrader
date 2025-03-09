@@ -279,6 +279,8 @@ class TradeRepository:
         SELECT R.TICKER,
                R.SERVICE,
                R.RSI,
+               R.RSI_OVER,
+               R.OVER_TIME,
                R.RSI_CROSS,
                R.CROSS_TIME
         FROM RSI_INFO AS R 
@@ -297,6 +299,8 @@ class TradeRepository:
                S.SERVICE,
                S.K_SLOW,
                S.D_SLOW,
+               S.STOCHASTIC_OVER,
+               S.OVER_TIME,
                S.STOCHASTIC_CROSS,
                S.CROSS_TIME
         FROM STOCHASTIC_INFO AS S 
