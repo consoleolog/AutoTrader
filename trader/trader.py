@@ -21,63 +21,60 @@ class Trader:
         self.data_generator = data_generator
         self.trade_repository = trade_repository
 
+    def check_peekout(self, ticker, data, stage):
+        trade_detail = self.trade_repository.get_detail(self.service, ticker)
+        short, mid, long = data[const.MACD.S_O], data[const.MACD.M_O], data[const.MACD.L_O]
+        if stage in [4, 5, 6]:
+            return all([
+                short.iloc[-1] < 0,
+                mid.iloc[-1] < 0,
+                long.iloc[-1] < 0,
+                short.iloc[-1] > data.query(f"datetime >= {trade_detail.macd_short_time}")[const.MACD.S_O].min(),
+                mid.iloc[-1] > data.query(f"datetime >= {trade_detail.macd_mid_time}")[const.MACD.M_O].min(),
+                long.iloc[-1] > data.query(f"datetime >= {trade_detail.macd_long_time}")[const.MACD.L_O].min(),
+            ])
+        else:
+            return all([
+                short.iloc[-1] > 0,
+                mid.iloc[-1] > 0,
+                long.iloc[-1] > 0,
+                short.iloc[-1] < data.query(f"datetime >= {trade_detail.macd_short_time}")[const.MACD.S_O].max(),
+                mid.iloc[-1] < data.query(f"datetime >= {trade_detail.macd_mid_time}")[const.MACD.M_O].max(),
+                long.iloc[-1] < data.query(f"datetime >= {trade_detail.macd_long_time}")[const.MACD.L_O].max(),
+            ])
+
     def update_args(self, ticker, data):
-        rsi, prev_rsi = data[const.RSI.V].iloc[-1], data[const.RSI.V].iloc[-2]
+        timestamp = data["timestamp"].iloc[-1]
+        rsi = data[const.RSI.V].iloc[-1]
         if rsi < 30:
-            self.trade_repository.update_trade_detail(
-                self.service, ticker, ("rsi_over", True)
-            )
-        if rsi > 70:
-            self.trade_repository.update_trade_detail(
-                self.service, ticker, ("rsi_over", False)
-            )
-        k_slow, d_slow = (
-            data[const.STOCHASTIC.K_SLOW].iloc[-1],
-            data[const.STOCHASTIC.D_SLOW].iloc[-1],
-        )
-        if k_slow < 30 and d_slow < 30:
-            self.trade_repository.update_trade_detail(
-                self.service, ticker, ("stochastic_over", True)
-            )
-        if k_slow > 70 and d_slow > 70:
-            self.trade_repository.update_trade_detail(
-                self.service, ticker, ("stochastic_over", False)
-            )
-        macd_sgc, macd_mgc, macd_lgc = (
-            isin(data[const.MACD.S_GC], True),
-            isin(data[const.MACD.M_GC], True),
-            isin(data[const.MACD.L_GC], True),
-        )
-        if macd_sgc:
-            self.trade_repository.update_trade_detail(
-                self.service, ticker, ("macd_short_over", True)
-            )
-        if macd_mgc:
-            self.trade_repository.update_trade_detail(
-                self.service, ticker, ("macd_mid_over", True)
-            )
-        if macd_lgc:
-            self.trade_repository.update_trade_detail(
-                self.service, ticker, ("macd_long_over", True)
-            )
-        macd_sdc, macd_mdc, macd_ldc = (
-            isin(data[const.MACD.S_DC], True),
-            isin(data[const.MACD.M_DC], True),
-            isin(data[const.MACD.L_DC], True),
-        )
-        if macd_sdc:
-            self.trade_repository.update_trade_detail(
-                self.service, ticker, ("macd_short_over", False)
-            )
-        if macd_mdc:
-            self.trade_repository.update_trade_detail(
-                self.service, ticker, ("macd_mid_over", False)
-            )
-        if macd_ldc:
-            self.trade_repository.update_trade_detail(
-                self.service, ticker, ("macd_long_over", False)
-            )
-        return rsi, k_slow, d_slow
+            self.trade_repository.update_trade_info(self.service, ticker, ("rsi", True, timestamp))
+        elif rsi > 70:
+            self.trade_repository.update_trade_detail(self.service, ticker, ("rsi", False, timestamp))
+
+        k, d = data[const.STOCHASTIC.K_SLOW].iloc[-1], data[const.STOCHASTIC.D_SLOW].iloc[-1]
+        if k < 30 and d < 30:
+            self.trade_repository.update_trade_detail(self.service, ticker ,("stochastic", True, timestamp))
+        elif k > 70 and d > 70:
+            self.trade_repository.update_trade_detail(self.service, ticker, ("stochastic", False, timestamp))
+            self.trade_repository.refresh_rsi(self.service, ticker)
+
+        short_gc, mid_gc, long_gc = data[const.MACD.S_GC].iloc[-1], data[const.MACD.M_GC].iloc[-1], data[const.MACD.L_GC].iloc[-1]
+        if short_gc:
+            self.trade_repository.update_trade_detail(self.service, ticker, ("macd_short", True, timestamp))
+        if mid_gc:
+            self.trade_repository.update_trade_detail(self.service, ticker, ("macd_mid", True, timestamp))
+        if long_gc:
+            self.trade_repository.update_trade_detail(self.service, ticker, ("macd_long", True, timestamp))
+
+        short_dc, mid_dc, long_dc = data[const.MACD.S_DC].iloc[-1], data[const.MACD.M_DC].iloc[-1], data[const.MACD.L_DC].iloc[-1]
+        if short_dc:
+            self.trade_repository.update_trade_detail(self.service, ticker, ("macd_short", False, timestamp))
+        if mid_dc:
+            self.trade_repository.update_trade_detail(self.service, ticker, ("macd_mid", False, timestamp))
+        if long_dc:
+            self.trade_repository.update_trade_detail(self.service, ticker, ("macd_long", False, timestamp))
+
+        return float(rsi), float(k), float(d)
 
     def trading(self, ticker):
         result = {}
@@ -97,10 +94,12 @@ class Trader:
             ]
         )
         trade_into = self.trade_repository.get_info(self.service, ticker)
-        #
+
+        # 처음 매수는 rsi 와 stochastic 의 과매도를 확인
         if trade_into.status != "bid":
             if (
-                golden_cross
+                self.check_peekout(ticker, data, stage)
+                and golden_cross
                 and trade_detail.rsi_over
                 and trade_detail.stochastic_over
                 and self.exchange.get_krw() > 30000
@@ -108,8 +107,10 @@ class Trader:
                 self.buy_and_update(ticker)
                 return result
         else:
+        # 추가 매수는 stochastic 의 과매도를 확인
             if (
-                golden_cross
+                self.check_peekout(ticker, data, stage)
+                and golden_cross
                 and trade_detail.stochastic_over
                 and self.exchange.get_krw() > 30000
             ):
@@ -152,28 +153,18 @@ class Trader:
         return result
 
     def sell_and_update(self, ticker, balance):
+        # update price
         self.trade_repository.update_trade_info(
             self.service, ticker, self.exchange.get_current_price(ticker), "ask"
         )
-        self.trade_repository.update_trade_detail(
-            self.service, ticker, ("macd_short_over", None)
-        )
-        self.trade_repository.update_trade_detail(
-            self.service, ticker, ("macd_mid_over", None)
-        )
-        self.trade_repository.update_trade_detail(
-            self.service, ticker, ("macd_long_over", None)
-        )
-        self.trade_repository.update_trade_detail(
-            self.service, ticker, ("rsi_over", None)
-        )
-        self.trade_repository.update_trade_detail(
-            self.service, ticker, ("stochastic_over", None)
-        )
+        # refresh macd
+        self.trade_repository.refresh()
         self.exchange.create_sell_order(ticker, balance)
 
     def buy_and_update(self, ticker):
         trade_info = self.trade_repository.get_info(self.service, ticker)
+
+        # 이미 매수 했으면 매수 평균가를 구해서 업데이트
         if trade_info.status == "bid":
             price = (
                 float(trade_info.price) + self.exchange.get_current_price(ticker)
@@ -183,21 +174,8 @@ class Trader:
             self.trade_repository.update_trade_info(
                 self.service, ticker, self.exchange.get_current_price(ticker), "bid"
             )
-        self.trade_repository.update_trade_detail(
-            self.service, ticker, ("macd_short_over", None)
-        )
-        self.trade_repository.update_trade_detail(
-            self.service, ticker, ("macd_mid_over", None)
-        )
-        self.trade_repository.update_trade_detail(
-            self.service, ticker, ("macd_long_over", None)
-        )
-        self.trade_repository.update_trade_detail(
-            self.service, ticker, ("rsi_over", None)
-        )
-        self.trade_repository.update_trade_detail(
-            self.service, ticker, ("stochastic_over", None)
-        )
+        self.trade_repository.refresh()
+
         if self.service == "upbit":
             price = self.config["trader"]["price"]
             self.exchange.create_buy_order(ticker, price)

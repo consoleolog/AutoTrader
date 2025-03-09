@@ -1,3 +1,4 @@
+import time
 from functools import wraps
 
 import pandas as pd
@@ -60,19 +61,40 @@ class TradeRepository:
     def update_trade_detail(self, service, ticker, data=None):
         cur = self.conn.cursor()
         if data is not None:
-            col, val = data
+            col, val, time = data
             cur.execute(
                 f"""
             UPDATE TRADE_DETAIL 
-            SET {col.upper()} = %s,
+            SET {col.upper()}_OVER = %s,
+                {col.upper()}_TIME = %s,
                 UPDATED_AT = NOW()
             WHERE TRADE_DETAIL.TICKER = %s 
             AND TRADE_DETAIL.SERVICE = %s 
             """,
-                (val, ticker, service),
+                (val, time, ticker, service),
             )
             self.conn.commit()
             cur.close()
+
+    @catch_db_exception
+    def refresh_macd(self, service, ticker, timestamp=int(time.time() * 1000)):
+        self.update_trade_detail(service, ticker, ("macd_short", None, timestamp))
+        self.update_trade_detail(service, ticker, ("macd_mid", None, timestamp))
+        self.update_trade_detail(service, ticker, ("macd_long", None, timestamp))
+
+    @catch_db_exception
+    def refresh_rsi(self, service, ticker, timestamp=int(time.time() * 1000)):
+        self.update_trade_detail(service, ticker, ("rsi", None, timestamp))
+
+    @catch_db_exception
+    def refresh_stochastic(self, service, ticker, timestamp=int(time.time() * 1000)):
+        self.update_trade_detail(service, ticker, ("stochastic", None, timestamp))
+
+    @catch_db_exception
+    def refresh(self, service, ticker, timestamp=int(time.time() * 1000)):
+        self.refresh_macd(service, ticker, timestamp)
+        self.refresh_rsi(service, ticker, timestamp)
+        self.refresh_stochastic(service, ticker, timestamp)
 
     @catch_db_exception
     def update_trade_info(self, service, ticker, price, status):
@@ -113,10 +135,15 @@ class TradeRepository:
         SELECT D.SERVICE,
                D.TICKER,
                D.RSI_OVER,
+               D.RSI_TIME,
                D.STOCHASTIC_OVER,
+               D.STOCHASTIC_TIME,
                D.MACD_SHORT_OVER,
+               D.MACD_SHORT_TIME,
                D.MACD_MID_OVER,
-               D.MACD_LONG_OVER, 
+               D.MACD_MID_TIME,
+               D.MACD_LONG_OVER,
+               D.MACD_LONG_TIME, 
                D.CREATED_AT,
                D.UPDATED_AT
         FROM TRADE_DETAIL AS D
