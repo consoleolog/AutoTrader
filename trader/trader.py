@@ -205,6 +205,7 @@ class Trader:
             )
             if buy_condition and self.exchange.get_krw() > 30000:
                 self.buy_and_update(ticker)
+                return result
         else:
             buy_condition = all(
                 [
@@ -217,6 +218,7 @@ class Trader:
             )
             if buy_condition and self.exchange.get_krw() > 30000:
                 self.buy_and_update(ticker)
+                return result
 
         balance = self.exchange.get_balance(ticker)
         if balance != 0:
@@ -230,11 +232,13 @@ class Trader:
 
             if sell_condition and stage == 1:
                 self.sell_and_update(ticker, balance)
+                return result
             if profit > 0.1 and (
                 rsi_info.rsi_cross == const.dead_cross
                 or stochastic_info.stochastic_cross == const.dead_cross
             ):
                 self.sell_and_update(ticker, balance)
+                return result
 
     def sell_and_update(self, ticker, balance):
         self.trade_repository.update_trade_info(
