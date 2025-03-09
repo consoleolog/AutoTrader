@@ -7,9 +7,7 @@
         "AAVE/KRW",
         "SOL/KRW",
         "ENS/KRW",
-        "YFI/KRW",
-        "XRP/KRW",
-        "DOGE/KRW"
+        "YFI/KRW"
     ],
     "save_dir": "saved/",
     "trader": {
