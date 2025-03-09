@@ -14,6 +14,7 @@ def catch_db_exception(func):
         try:
             return func(self, *args, **kwargs)
         except psycopg2.Error as e:
+            self.logger.error(e)
             self.conn.rollback()
 
     return wrapper

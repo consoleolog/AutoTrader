@@ -23,8 +23,8 @@ class Trader:
 
     def update_stochastic(self, ticker, data):
         k_slow, d_slow = (
-            data[const.STOCHASTIC.K_SLOW].iloc[-1],
-            data[const.STOCHASTIC.D_SLOW].iloc[-1],
+            float(data[const.STOCHASTIC.K_SLOW].iloc[-1]),
+            float(data[const.STOCHASTIC.D_SLOW].iloc[-1]),
         )
         datetime = data["datetime"].iloc[-1]
         if k_slow < 30 and d_slow < 30:
@@ -66,7 +66,7 @@ class Trader:
         return k_slow, d_slow
 
     def update_rsi(self, ticker, data):
-        rsi = data[const.RSI.V].iloc[-1]
+        rsi = float(data[const.RSI.V].iloc[-1])
         rsi_gc = data[const.RSI.GC].iloc[-1]
         rsi_dc = data[const.RSI.DC].iloc[-1]
         datetime = data["datetime"].iloc[-1]
