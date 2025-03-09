@@ -6,9 +6,7 @@ from modules import DataGenerator, Exchange
 
 class DataGeneratorTest(unittest.TestCase):
     def setUp(self):
-        self.data_generator = DataGenerator(
-            5, 8, 13, 9, '15m'
-        )
+        self.data_generator = DataGenerator(5, 8, 13, 9, "15m")
         self.exchange = Exchange("upbit")
 
     def testLoad(self):

@@ -6,7 +6,7 @@ import psycopg2
 from sqlalchemy import create_engine
 
 from config import env
-from models import TradeInfo, RsiInfo, StochasticInfo, MacdInfo
+from models import MacdInfo, RsiInfo, StochasticInfo, TradeInfo
 
 
 def catch_db_exception(func):
@@ -40,7 +40,8 @@ class TradeRepository:
             INSERT INTO RSI_INFO(TICKER, SERVICE) VALUES (%s, %s);
             INSERT INTO STOCHASTIC_INFO(TICKER, SERVICE) VALUES (%s, %s);
             INSERT INTO MACD_INFO(TICKER, SERVICE) VALUES (%s, %s);
-            """,(ticker, service, ticker, service, ticker, service, ticker, service)
+            """,
+            (ticker, service, ticker, service, ticker, service, ticker, service),
         )
         self.conn.commit()
         cur.close()
@@ -72,10 +73,18 @@ class TradeRepository:
                 OVER_TIME = %s
             WHERE RSI_INFO.TICKER = %s
             AND RSI_INFO.SERVICE = %s
-            """,(rsi_info.rsi, rsi_info.rsi_over, rsi_info.over_time, rsi_info.ticker, rsi_info.service)
+            """,
+            (
+                rsi_info.rsi,
+                rsi_info.rsi_over,
+                rsi_info.over_time,
+                rsi_info.ticker,
+                rsi_info.service,
+            ),
         )
         self.conn.commit()
         cur.close()
+
     def rsi_cross(self, rsi_info: RsiInfo):
         cur = self.conn.cursor()
         cur.execute(
@@ -86,7 +95,14 @@ class TradeRepository:
                 CROSS_TIME = %s
             WHERE RSI_INFO.TICKER = %s
             AND RSI_INFO.SERVICE = %s
-            """,(rsi_info.rsi, rsi_info.rsi_cross, rsi_info.cross_time, rsi_info.ticker, rsi_info.service)
+            """,
+            (
+                rsi_info.rsi,
+                rsi_info.rsi_cross,
+                rsi_info.cross_time,
+                rsi_info.ticker,
+                rsi_info.service,
+            ),
         )
         self.conn.commit()
         cur.close()
@@ -100,10 +116,17 @@ class TradeRepository:
                 SHORT_TIME = %s
             WHERE MACD_INFO.TICKER = %s
             AND MACD_INFO.SERVICE = %s
-            """,(macd_info.short_cross, macd_info.short_time, macd_info.ticker, macd_info.service)
+            """,
+            (
+                macd_info.short_cross,
+                macd_info.short_time,
+                macd_info.ticker,
+                macd_info.service,
+            ),
         )
         self.conn.commit()
         cur.close()
+
     def macd_mid(self, macd_info: MacdInfo):
         cur = self.conn.cursor()
         cur.execute(
@@ -113,7 +136,13 @@ class TradeRepository:
                 MID_TIME = %s
             WHERE MACD_INFO.TICKER = %s
             AND MACD_INFO.SERVICE = %s
-            """,(macd_info.mid_cross, macd_info.mid_time, macd_info.ticker, macd_info.service)
+            """,
+            (
+                macd_info.mid_cross,
+                macd_info.mid_time,
+                macd_info.ticker,
+                macd_info.service,
+            ),
         )
         self.conn.commit()
         cur.close()
@@ -127,7 +156,13 @@ class TradeRepository:
                 LONG_TIME = %s
             WHERE MACD_INFO.TICKER = %s
             AND MACD_INFO.SERVICE = %s
-            """,(macd_info.long_cross, macd_info.long_time, macd_info.ticker, macd_info.service)
+            """,
+            (
+                macd_info.long_cross,
+                macd_info.long_time,
+                macd_info.ticker,
+                macd_info.service,
+            ),
         )
         self.conn.commit()
         cur.close()
@@ -143,7 +178,15 @@ class TradeRepository:
                 OVER_TIME = %s
             WHERE STOCHASTIC_INFO.TICKER = %s
             AND STOCHASTIC_INFO.SERVICE = %s
-            """,(stochastic_info.k_slow, stochastic_info.d_slow, stochastic_info.stochastic_over, stochastic_info.over_time, stochastic_info.ticker, stochastic_info.service)
+            """,
+            (
+                stochastic_info.k_slow,
+                stochastic_info.d_slow,
+                stochastic_info.stochastic_over,
+                stochastic_info.over_time,
+                stochastic_info.ticker,
+                stochastic_info.service,
+            ),
         )
         self.conn.commit()
         cur.close()
@@ -159,7 +202,15 @@ class TradeRepository:
                 CROSS_TIME = %s
             WHERE STOCHASTIC_INFO.TICKER = %s
             AND STOCHASTIC_INFO.SERVICE = %s
-            """,(stochastic_info.k_slow, stochastic_info.d_slow, stochastic_info.stochastic_cross, stochastic_info.cross_time, stochastic_info.ticker, stochastic_info.service)
+            """,
+            (
+                stochastic_info.k_slow,
+                stochastic_info.d_slow,
+                stochastic_info.stochastic_cross,
+                stochastic_info.cross_time,
+                stochastic_info.ticker,
+                stochastic_info.service,
+            ),
         )
         self.conn.commit()
         cur.close()
@@ -177,7 +228,17 @@ class TradeRepository:
                 LONG_TIME = %s
             WHERE MACD_INFO.TICKER = %s
             AND MACD_INFO.SERVICE = %s
-            """,(macd_info.short_cross, macd_info.short_time, macd_info.mid_cross, macd_info.mid_time, macd_info.long_cross, macd_info.long_time, macd_info.ticker, macd_info.service)
+            """,
+            (
+                macd_info.short_cross,
+                macd_info.short_time,
+                macd_info.mid_cross,
+                macd_info.mid_time,
+                macd_info.long_cross,
+                macd_info.long_time,
+                macd_info.ticker,
+                macd_info.service,
+            ),
         )
         self.conn.commit()
         cur.close()
@@ -193,13 +254,21 @@ class TradeRepository:
                 CROSS_TIME = %s
             WHERE RSI_INFO.TICKER = %s
             AND RSI_INFO.SERVICE = %s
-            """,(rsi_info.rsi, rsi_info.rsi_cross, rsi_info.cross_time , rsi_info.ticker, rsi_info.service)
+            """,
+            (
+                rsi_info.rsi,
+                rsi_info.rsi_cross,
+                rsi_info.cross_time,
+                rsi_info.ticker,
+                rsi_info.service,
+            ),
         )
         self.conn.commit()
         cur.close()
 
     def get_rsi(self, ticker, service):
-        data =pd.read_sql("""
+        data = pd.read_sql(
+            """
         SELECT R.TICKER,
                R.SERVICE,
                R.RSI,
@@ -208,11 +277,15 @@ class TradeRepository:
         FROM RSI_INFO AS R 
         WHERE R.TICKER = %(ticker)s 
         AND R.SERVICE = %(service)s 
-        """, self.engine, params={"ticker": ticker, "service": service})
+        """,
+            self.engine,
+            params={"ticker": ticker, "service": service},
+        )
         return RsiInfo.from_df(data.iloc[-1])
 
     def get_stochastic(self, ticker, service):
-        data = pd.read_sql("""
+        data = pd.read_sql(
+            """
         SELECT S.TICKER,
                S.SERVICE,
                S.K_SLOW,
@@ -222,11 +295,15 @@ class TradeRepository:
         FROM STOCHASTIC_INFO AS S 
         WHERE S.TICKER = %(ticker)s 
         AND S.SERVICE = %(service)s 
-        """, self.engine, params={"ticker": ticker, "service": service})
+        """,
+            self.engine,
+            params={"ticker": ticker, "service": service},
+        )
         return StochasticInfo.from_df(data.iloc[-1])
 
     def get_macd(self, ticker, service):
-        data = pd.read_sql("""
+        data = pd.read_sql(
+            """
         SELECT M.TICKER,
                M.SERVICE,
                M.SHORT_CROSS,
@@ -238,7 +315,10 @@ class TradeRepository:
         FROM MACD_INFO AS M 
         WHERE M.TICKER = %(ticker)s 
         AND M.SERVICE = %(service)s 
-        """, self.engine, params={"ticker": ticker, "service": service})
+        """,
+            self.engine,
+            params={"ticker": ticker, "service": service},
+        )
         return MacdInfo.from_df(data.iloc[-1])
 
     @catch_db_exception
@@ -257,6 +337,7 @@ class TradeRepository:
         )
         self.conn.commit()
         cur.close()
+
 
 if __name__ == "__main__":
     repo = TradeRepository()

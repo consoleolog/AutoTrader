@@ -2,8 +2,9 @@ from concurrent.futures import ThreadPoolExecutor
 from pprint import pprint
 
 import constants as const
-from models import RsiInfo, StochasticInfo, MacdInfo
+from models import MacdInfo, RsiInfo, StochasticInfo
 from modules import DataGenerator, Exchange, TradeRepository
+
 
 class Trader:
     def __init__(
@@ -21,14 +22,17 @@ class Trader:
         self.trade_repository = trade_repository
 
     def update_stochastic(self, ticker, data):
-        k_slow, d_slow = data[const.STOCHASTIC.K_SLOW].iloc[-1], data[const.STOCHASTIC.D_SLOW].iloc[-1]
+        k_slow, d_slow = (
+            data[const.STOCHASTIC.K_SLOW].iloc[-1],
+            data[const.STOCHASTIC.D_SLOW].iloc[-1],
+        )
         datetime = data["datetime"].iloc[-1]
         if k_slow < 30 and d_slow < 30:
             stochastic_info = StochasticInfo(
                 ticker=ticker,
                 service=self.service,
                 stochastic_over=const.over_sold,
-                over_time=datetime
+                over_time=datetime,
             )
             self.trade_repository.stochastic_over(stochastic_info)
         elif k_slow > 70 and d_slow > 70:
@@ -36,10 +40,13 @@ class Trader:
                 ticker=ticker,
                 service=self.service,
                 stochastic_over=const.over_bought,
-                over_time=datetime
+                over_time=datetime,
             )
             self.trade_repository.stochastic_over(stochastic_info)
-        golden_cross, dead_cross = data[const.STOCHASTIC.GC].iloc[-1], data[const.STOCHASTIC.DC].iloc[-1]
+        golden_cross, dead_cross = (
+            data[const.STOCHASTIC.GC].iloc[-1],
+            data[const.STOCHASTIC.DC].iloc[-1],
+        )
         if golden_cross:
             stochastic_info = StochasticInfo(
                 ticker=ticker,
@@ -56,6 +63,7 @@ class Trader:
                 cross_time=datetime,
             )
             self.trade_repository.stochastic_cross(stochastic_info)
+        return k_slow, d_slow
 
     def update_rsi(self, ticker, data):
         rsi = data[const.RSI.V].iloc[-1]
@@ -86,7 +94,7 @@ class Trader:
                 service=self.service,
                 rsi=rsi,
                 rsi_cross=const.golden_cross,
-                cross_time=datetime
+                cross_time=datetime,
             )
             self.trade_repository.rsi_over(rsi_info)
         if rsi_dc:
@@ -95,13 +103,22 @@ class Trader:
                 service=self.service,
                 rsi=rsi,
                 rsi_cross=const.dead_cross,
-                cross_time=datetime
+                cross_time=datetime,
             )
             self.trade_repository.rsi_over(rsi_info)
+        return rsi
 
     def update_macd(self, ticker, data):
-        short_golden, mid_golden, long_golden = data[const.MACD.S_GC].iloc[-1], data[const.MACD.M_GC].iloc[-1], data[const.MACD.L_GC].iloc[-1]
-        short_dead, mid_dead, long_dead = data[const.MACD.S_DC].iloc[-1], data[const.MACD.M_DC].iloc[-1], data[const.MACD.L_DC].iloc[-1]
+        short_golden, mid_golden, long_golden = (
+            data[const.MACD.S_GC].iloc[-1],
+            data[const.MACD.M_GC].iloc[-1],
+            data[const.MACD.L_GC].iloc[-1],
+        )
+        short_dead, mid_dead, long_dead = (
+            data[const.MACD.S_DC].iloc[-1],
+            data[const.MACD.M_DC].iloc[-1],
+            data[const.MACD.L_DC].iloc[-1],
+        )
         datetime = data["datetime"].iloc[-1]
 
         # MACD Short
@@ -159,53 +176,64 @@ class Trader:
             self.trade_repository.macd_long(macd_info)
 
     def update_args(self, ticker, data):
-        self.update_rsi(ticker, data)
-        self.update_stochastic(ticker, data)
+        rsi = self.update_rsi(ticker, data)
+        k_slow, d_slow = self.update_stochastic(ticker, data)
         self.update_macd(ticker, data)
+        return rsi, k_slow, d_slow
 
     def trading(self, ticker):
         result = {}
         data = self.data_generator.load(ticker, exchange_module=self.exchange)
         stage = self.data_generator.get_stage(data)
         result["ticker"], result["stage"] = ticker, stage
-        self.update_args(ticker, data)
+        result["rsi"], result["k_slow"], result["d_slow"] = self.update_args(
+            ticker, data
+        )
 
         rsi_info = self.trade_repository.get_rsi(ticker, self.service)
         stochastic_info = self.trade_repository.get_stochastic(ticker, self.service)
         macd_info = self.trade_repository.get_macd(ticker, self.service)
 
-
         trade_info = self.trade_repository.get_info(ticker, self.service)
         if trade_info.status == "bid":
-            buy_condition = all([
-                macd_info.short_cross == const.golden_cross,
-                macd_info.mid_cross == const.golden_cross,
-                macd_info.long_cross == const.golden_cross,
-            ])
+            buy_condition = all(
+                [
+                    macd_info.short_cross == const.golden_cross,
+                    macd_info.mid_cross == const.golden_cross,
+                    macd_info.long_cross == const.golden_cross,
+                ]
+            )
             if buy_condition and self.exchange.get_krw() > 30000:
                 self.buy_and_update(ticker)
         else:
-            buy_condition = all([
-                rsi_info.rsi_over == const.over_sold,
-                stochastic_info.stochastic_over == const.over_sold,
-                macd_info.short_cross == const.golden_cross,
-                macd_info.mid_cross == const.golden_cross,
-                macd_info.long_cross == const.golden_cross,
-            ])
+            buy_condition = all(
+                [
+                    rsi_info.rsi_over == const.over_sold,
+                    stochastic_info.stochastic_over == const.over_sold,
+                    macd_info.short_cross == const.golden_cross,
+                    macd_info.mid_cross == const.golden_cross,
+                    macd_info.long_cross == const.golden_cross,
+                ]
+            )
             if buy_condition and self.exchange.get_krw() > 30000:
                 self.buy_and_update(ticker)
 
         balance = self.exchange.get_balance(ticker)
         if balance != 0:
             profit = self.get_profit(ticker)
-            sell_condition = all([
-                stochastic_info.stochastic_over == const.over_sold,
-                rsi_info.rsi_over == const.over_sold,
-            ])
+            sell_condition = all(
+                [
+                    stochastic_info.stochastic_over == const.over_sold,
+                    rsi_info.rsi_over == const.over_sold,
+                ]
+            )
 
             if sell_condition and stage == 1:
                 self.sell_and_update(ticker, balance)
-            if profit > 0.1 and (rsi_info.rsi_cross == const.dead_cross or stochastic_info.stochastic_cross == const.dead_cross):
+            if profit > 0.1 and (
+                rsi_info.rsi_cross == const.dead_cross
+                or stochastic_info.stochastic_cross == const.dead_cross
+            ):
                 self.sell_and_update(ticker, balance)
 
     def sell_and_update(self, ticker, balance):
@@ -220,9 +248,15 @@ class Trader:
         # 추가 매수라면 매수 가격의 평균으로 업데이트
         if trade_info.status == "bid":
             self.trade_repository.update_trade_info(
-                self.service, ticker, (float(trade_info.price) + self.exchange.get_current_price(ticker)) / 2, "bid")
+                self.service,
+                ticker,
+                (float(trade_info.price) + self.exchange.get_current_price(ticker)) / 2,
+                "bid",
+            )
         else:
-            self.trade_repository.update_trade_info(self.service, ticker, self.exchange.get_current_price(ticker), "bid")
+            self.trade_repository.update_trade_info(
+                self.service, ticker, self.exchange.get_current_price(ticker), "bid"
+            )
 
         if self.service == "upbit":
             price = self.config["trader"]["price"]
