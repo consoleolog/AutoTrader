@@ -30,6 +30,8 @@ class Trader:
         if k_slow < 30 and d_slow < 30:
             stochastic_info = StochasticInfo(
                 ticker=ticker,
+                k_slow=k_slow,
+                d_slow=d_slow,
                 service=self.service,
                 stochastic_over=const.over_sold,
                 over_time=datetime,
@@ -39,6 +41,8 @@ class Trader:
             stochastic_info = StochasticInfo(
                 ticker=ticker,
                 service=self.service,
+                k_slow=k_slow,
+                d_slow=d_slow,
                 stochastic_over=const.over_bought,
                 over_time=datetime,
             )
@@ -51,6 +55,8 @@ class Trader:
             stochastic_info = StochasticInfo(
                 ticker=ticker,
                 service=self.service,
+                k_slow=k_slow,
+                d_slow=d_slow,
                 stochastic_cross=const.golden_cross,
                 cross_time=datetime,
             )
@@ -59,6 +65,8 @@ class Trader:
             stochastic_info = StochasticInfo(
                 ticker=ticker,
                 service=self.service,
+                k_slow=k_slow,
+                d_slow=d_slow,
                 stochastic_cross=const.dead_cross,
                 cross_time=datetime,
             )
