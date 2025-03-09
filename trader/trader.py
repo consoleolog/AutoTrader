@@ -104,7 +104,7 @@ class Trader:
                 rsi_cross=const.golden_cross,
                 cross_time=datetime,
             )
-            self.trade_repository.rsi_over(rsi_info)
+            self.trade_repository.rsi_cross(rsi_info)
         if rsi_dc:
             rsi_info = RsiInfo(
                 ticker=ticker,
@@ -113,7 +113,7 @@ class Trader:
                 rsi_cross=const.dead_cross,
                 cross_time=datetime,
             )
-            self.trade_repository.rsi_over(rsi_info)
+            self.trade_repository.rsi_cross(rsi_info)
         return rsi
 
     def update_macd(self, ticker, data):
