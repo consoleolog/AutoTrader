@@ -285,7 +285,7 @@ class Trader:
         [pprint(f.result()) for f in futures]
 
     def get_profit(self, ticker):
-        trade_info = self.trade_repository.get_info(self.service, ticker)
+        trade_info = self.trade_repository.get_info(ticker, self.service)
         buy_price = float(trade_info.price)
         curr_price = self.exchange.get_current_price(ticker)
         return ((curr_price - buy_price) / buy_price) * 100.0
