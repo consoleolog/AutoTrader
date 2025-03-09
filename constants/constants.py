@@ -1,0 +1,5 @@
+golden_cross = "GOLDEN_CROSS"
+dead_cross = "DEAD_CROSS"
+none = "NONE"
+over_bought = "OVER_BOUGHT"
+over_sold = "OVER_SOLD"
