@@ -44,7 +44,7 @@ class Trader:
             ])
 
     def update_args(self, ticker, data):
-        timestamp = data["timestamp"].iloc[-1]
+        timestamp = data["datetime"].iloc[-1]
         rsi = data[const.RSI.V].iloc[-1]
         if rsi < 30:
             self.trade_repository.update_trade_info(self.service, ticker, ("rsi", True, timestamp))
