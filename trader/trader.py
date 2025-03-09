@@ -223,6 +223,7 @@ class Trader:
         balance = self.exchange.get_balance(ticker)
         if balance != 0:
             profit = self.get_profit(ticker)
+            result["profit"] = profit
             sell_condition = all(
                 [
                     stochastic_info.stochastic_over == const.over_sold,
@@ -239,6 +240,7 @@ class Trader:
             ):
                 self.sell_and_update(ticker, balance)
                 return result
+        return result
 
     def sell_and_update(self, ticker, balance):
         self.trade_repository.update_trade_info(
