@@ -1,3 +1,4 @@
+import time
 from concurrent.futures import ThreadPoolExecutor
 from pprint import pprint
 
@@ -192,6 +193,7 @@ class Trader:
     def trading(self, ticker):
         result = {}
         data = self.data_generator.load(ticker, exchange_module=self.exchange)
+        datetime = data["datetime"].iloc[-1]
         stage = self.data_generator.get_stage(data)
         result["ticker"], result["stage"] = ticker, stage
         result["rsi"], result["k_slow"], result["d_slow"] = self.update_args(
@@ -262,11 +264,12 @@ class Trader:
         self.trade_repository.update_trade_info(
             self.service, ticker, self.exchange.get_current_price(ticker), "ask"
         )
+        self.trade_repository.refresh_macd(ticker, self.service)
         self.exchange.create_sell_order(ticker, balance)
 
     def buy_and_update(self, ticker):
         trade_info = self.trade_repository.get_info(ticker, self.service)
-
+        self.trade_repository.refresh_macd(ticker, self.service)
         # 추가 매수라면 매수 가격의 평균으로 업데이트
         if trade_info.status == "bid":
             self.trade_repository.update_trade_info(

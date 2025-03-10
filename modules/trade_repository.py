@@ -46,6 +46,23 @@ class TradeRepository:
         self.conn.commit()
         cur.close()
 
+    @catch_db_exception
+    def refresh_macd(self, ticker, service):
+        cur = self.conn.cursor()
+        cur.execute(
+            """
+            UPDATE MACD_INFO
+            SET SHORT_CROSS = NULL,
+                MID_CROSS = NULL,
+                LONG_CROSS = NULL 
+            WHERE MACD_INFO.TICKER = %s
+            AND MACD_INFO.SERVICE = %s
+            """,
+            (ticker, service),
+        )
+        self.conn.commit()
+        cur.close()
+
     def get_info(self, ticker, service):
         query = """
         SELECT I.SERVICE,
@@ -217,35 +234,6 @@ class TradeRepository:
                 stochastic_info.cross_time,
                 stochastic_info.ticker,
                 stochastic_info.service,
-            ),
-        )
-        self.conn.commit()
-        cur.close()
-
-    @catch_db_exception
-    def macd_cross(self, macd_info: MacdInfo):
-        cur = self.conn.cursor()
-        cur.execute(
-            """
-            UPDATE MACD_INFO
-            SET SHORT_CROSS = %s,
-                SHORT_TIME = %s,
-                MID_CROSS = %s,
-                MID_TIME = %s,
-                LONG_CROSS = %s,
-                LONG_TIME = %s
-            WHERE MACD_INFO.TICKER = %s
-            AND MACD_INFO.SERVICE = %s
-            """,
-            (
-                macd_info.short_cross,
-                macd_info.short_time,
-                macd_info.mid_cross,
-                macd_info.mid_time,
-                macd_info.long_cross,
-                macd_info.long_time,
-                macd_info.ticker,
-                macd_info.service,
             ),
         )
         self.conn.commit()
