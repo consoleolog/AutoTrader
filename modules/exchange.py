@@ -51,7 +51,13 @@ class Exchange:
             return self.exchange.create_market_buy_order(symbol=ticker, amount=amount)
 
     def create_sell_order(self, ticker, amount):
-        return self.exchange.create_market_sell_order(symbol=ticker, amount=amount)
+        if self.service == "upbit":
+            return self.upbit.sell_market_order(
+                ticker=_format_ticker(ticker),
+                volume=float(amount),
+            )
+        else:
+            return self.exchange.create_market_sell_order(symbol=ticker, amount=amount)
 
     def get_current_price(self, ticker):
         if self.service == "upbit":
