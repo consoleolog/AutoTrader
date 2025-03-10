@@ -206,6 +206,7 @@ class Trader:
         if trade_info.status == "bid":
             buy_condition = all(
                 [
+                    stochastic_info.stochastic_over == const.over_sold,
                     macd_info.short_cross == const.golden_cross,
                     macd_info.mid_cross == const.golden_cross,
                     macd_info.long_cross == const.golden_cross,
@@ -232,22 +233,29 @@ class Trader:
         if balance != 0:
             profit = self.get_profit(ticker)
             result["profit"] = profit
-            sell_condition = all(
-                [
-                    stochastic_info.stochastic_over == const.over_sold,
-                    rsi_info.rsi_over == const.over_sold,
-                ]
-            )
 
-            if sell_condition and stage == 1:
-                self.sell_and_update(ticker, balance)
-                return result
-            if profit > 0.1 and (
-                rsi_info.rsi_cross == const.dead_cross
-                or stochastic_info.stochastic_cross == const.dead_cross
-            ):
-                self.sell_and_update(ticker, balance)
-                return result
+            if stage == 1:
+                sell_condition = all(
+                    [
+                        stochastic_info.stochastic_over == const.over_bought,
+                        rsi_info.rsi_over == const.over_bought,
+                    ]
+                )
+                if sell_condition:
+                    self.sell_and_update(ticker, balance)
+                    return result
+            else:
+                sell_condition = any(
+                    [
+                        rsi_info.rsi_over == const.over_bought,
+                        rsi_info.rsi_cross == const.dead_cross,
+                        stochastic_info.stochastic_over == const.over_bought,
+                        stochastic_info.stochastic_cross == const.dead_cross,
+                    ]
+                )
+                if sell_condition and profit > 0.1:
+                    self.sell_and_update(ticker, balance)
+                    return result
         return result
 
     def sell_and_update(self, ticker, balance):

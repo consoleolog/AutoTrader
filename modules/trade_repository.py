@@ -16,6 +16,7 @@ def catch_db_exception(func):
         except psycopg2.Error as e:
             print(e)
             self.conn.rollback()
+
     return wrapper
 
 
