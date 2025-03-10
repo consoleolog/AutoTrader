@@ -238,6 +238,16 @@ class Trader:
             profit = self.get_profit(ticker)
             result["profit"] = profit
 
+            root_sell_condition = all(
+                [
+                    stochastic_info.stochastic_over == const.over_bought,
+                    rsi_info.rsi_over == const.over_bought,
+                ]
+            )
+            if root_sell_condition and stage == 1:
+                self.sell_and_update(ticker, balance)
+                return result
+
             sell_condition = all(
                 [
                     rsi_info.rsi_cross == const.dead_cross,
