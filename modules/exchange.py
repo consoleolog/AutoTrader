@@ -1,8 +1,7 @@
-import os
-
 import ccxt
 import pandas as pd
 import pyupbit
+from pyupbit import Upbit
 
 from config import env
 from models import TickerInfo
@@ -22,6 +21,7 @@ class Exchange:
                 }
             )
             self.exchange.options["createMarketBuyOrderRequiresPrice"] = False
+            self.upbit = Upbit(env.upbit["accessKey"], env.upbit["secretKey"])
         elif service == "bithumb":
             self.exchange = ccxt.bithumb(
                 config={
@@ -43,8 +43,12 @@ class Exchange:
 
     def create_buy_order(self, ticker, amount):
         if self.service == "upbit":
-            self.exchange.options["createMarketBuyOrderRequiresPrice"] = False
-        return self.exchange.create_market_buy_order(symbol=ticker, amount=amount)
+            return self.upbit.buy_market_order(
+                ticker=_format_ticker(ticker),
+                price=float(amount),
+            )
+        else:
+            return self.exchange.create_market_buy_order(symbol=ticker, amount=amount)
 
     def create_sell_order(self, ticker, amount):
         return self.exchange.create_market_sell_order(symbol=ticker, amount=amount)

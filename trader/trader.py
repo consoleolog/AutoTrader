@@ -1,4 +1,3 @@
-import time
 from concurrent.futures import ThreadPoolExecutor
 from pprint import pprint
 
@@ -129,6 +128,10 @@ class Trader:
             data[const.MACD.L_DC].iloc[-1],
         )
         datetime = int(data["datetime"].iloc[-1])
+
+        if short_dead and mid_dead and long_dead:
+            self.trade_repository.refresh_rsi(ticker, self.service)
+            self.trade_repository.refresh_stochastic(ticker, self.service)
 
         # MACD Short
         if short_golden:
