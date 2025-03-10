@@ -56,12 +56,50 @@ class TradeRepository:
                 MID_CROSS = NULL,
                 LONG_CROSS = NULL 
             WHERE MACD_INFO.TICKER = %s
-            AND MACD_INFO.SERVICE = %s
+            AND MACD_INFO.SERVICE = %s;
             """,
             (ticker, service),
         )
         self.conn.commit()
         cur.close()
+
+    @catch_db_exception
+    def refresh_rsi(self, ticker, service):
+        cur = self.conn.cursor()
+        cur.execute(
+            """
+            UPDATE RSI_INFO
+            SET RSI_CROSS = NULL,
+                RSI_OVER = NULL
+            WHERE RSI_INFO.TICKER = %s
+            AND RSI_INFO.SERVICE = %s;
+            """,
+            (ticker, service),
+        )
+        self.conn.commit()
+        cur.close()
+
+    @catch_db_exception
+    def refresh_stochastic(self, ticker, service):
+        cur = self.conn.cursor()
+        cur.execute(
+            """
+            UPDATE STOCHASTIC_INFO
+            SET STOCHASTIC_OVER = NULL,
+                STOCHASTIC_CROSS = NULL
+            WHERE STOCHASTIC_INFO.TICKER = %s
+            AND STOCHASTIC_INFO.SERVICE = %s;
+            """,
+            (ticker, service),
+        )
+        self.conn.commit()
+        cur.close()
+
+    @catch_db_exception
+    def refresh(self, ticker, service):
+        self.refresh_macd(ticker, service)
+        self.refresh_rsi(ticker, service)
+        self.refresh_stochastic(ticker, service)
 
     def get_info(self, ticker, service):
         query = """
@@ -73,7 +111,7 @@ class TradeRepository:
                I.CREATED_AT
         FROM TRADE_INFO AS I
         WHERE I.SERVICE = %(service)s
-        AND I.TICKER = %(ticker)s
+        AND I.TICKER = %(ticker)s;
         """
         data = pd.read_sql(
             query, self.engine, params={"service": service, "ticker": ticker}
@@ -90,7 +128,7 @@ class TradeRepository:
                 RSI_OVER = %s,
                 OVER_TIME = %s
             WHERE RSI_INFO.TICKER = %s
-            AND RSI_INFO.SERVICE = %s
+            AND RSI_INFO.SERVICE = %s;
             """,
             (
                 rsi_info.rsi,
@@ -113,7 +151,7 @@ class TradeRepository:
                 RSI_CROSS = %s,
                 CROSS_TIME = %s
             WHERE RSI_INFO.TICKER = %s
-            AND RSI_INFO.SERVICE = %s
+            AND RSI_INFO.SERVICE = %s;
             """,
             (
                 rsi_info.rsi,
@@ -135,7 +173,7 @@ class TradeRepository:
             SET SHORT_CROSS = %s,
                 SHORT_TIME = %s
             WHERE MACD_INFO.TICKER = %s
-            AND MACD_INFO.SERVICE = %s
+            AND MACD_INFO.SERVICE = %s;
             """,
             (
                 macd_info.short_cross,
@@ -156,7 +194,7 @@ class TradeRepository:
             SET MID_CROSS = %s,
                 MID_TIME = %s
             WHERE MACD_INFO.TICKER = %s
-            AND MACD_INFO.SERVICE = %s
+            AND MACD_INFO.SERVICE = %s;
             """,
             (
                 macd_info.mid_cross,
@@ -177,7 +215,7 @@ class TradeRepository:
             SET LONG_CROSS = %s,
                 LONG_TIME = %s
             WHERE MACD_INFO.TICKER = %s
-            AND MACD_INFO.SERVICE = %s
+            AND MACD_INFO.SERVICE = %s;
             """,
             (
                 macd_info.long_cross,
@@ -200,7 +238,7 @@ class TradeRepository:
                 STOCHASTIC_OVER = %s,
                 OVER_TIME = %s
             WHERE STOCHASTIC_INFO.TICKER = %s
-            AND STOCHASTIC_INFO.SERVICE = %s
+            AND STOCHASTIC_INFO.SERVICE = %s;
             """,
             (
                 stochastic_info.k_slow,
@@ -225,7 +263,7 @@ class TradeRepository:
                 STOCHASTIC_CROSS = %s,
                 CROSS_TIME = %s
             WHERE STOCHASTIC_INFO.TICKER = %s
-            AND STOCHASTIC_INFO.SERVICE = %s
+            AND STOCHASTIC_INFO.SERVICE = %s;
             """,
             (
                 stochastic_info.k_slow,
@@ -249,7 +287,7 @@ class TradeRepository:
                 RSI_CROSS = %s,
                 CROSS_TIME = %s
             WHERE RSI_INFO.TICKER = %s
-            AND RSI_INFO.SERVICE = %s
+            AND RSI_INFO.SERVICE = %s;
             """,
             (
                 rsi_info.rsi,
@@ -274,7 +312,7 @@ class TradeRepository:
                R.CROSS_TIME
         FROM RSI_INFO AS R 
         WHERE R.TICKER = %(ticker)s 
-        AND R.SERVICE = %(service)s 
+        AND R.SERVICE = %(service)s;
         """,
             self.engine,
             params={"ticker": ticker, "service": service},
@@ -294,7 +332,7 @@ class TradeRepository:
                S.CROSS_TIME
         FROM STOCHASTIC_INFO AS S 
         WHERE S.TICKER = %(ticker)s 
-        AND S.SERVICE = %(service)s 
+        AND S.SERVICE = %(service)s;
         """,
             self.engine,
             params={"ticker": ticker, "service": service},
@@ -314,7 +352,7 @@ class TradeRepository:
                M.LONG_TIME
         FROM MACD_INFO AS M 
         WHERE M.TICKER = %(ticker)s 
-        AND M.SERVICE = %(service)s 
+        AND M.SERVICE = %(service)s; 
         """,
             self.engine,
             params={"ticker": ticker, "service": service},

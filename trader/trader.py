@@ -264,12 +264,12 @@ class Trader:
         self.trade_repository.update_trade_info(
             self.service, ticker, self.exchange.get_current_price(ticker), "ask"
         )
-        self.trade_repository.refresh_macd(ticker, self.service)
+        self.trade_repository.refresh(ticker, self.service)
         self.exchange.create_sell_order(ticker, balance)
 
     def buy_and_update(self, ticker):
         trade_info = self.trade_repository.get_info(ticker, self.service)
-        self.trade_repository.refresh_macd(ticker, self.service)
+        self.trade_repository.refresh(ticker, self.service)
         # 추가 매수라면 매수 가격의 평균으로 업데이트
         if trade_info.status == "bid":
             self.trade_repository.update_trade_info(
