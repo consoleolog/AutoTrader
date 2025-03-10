@@ -196,7 +196,6 @@ class Trader:
     def trading(self, ticker):
         result = {}
         data = self.data_generator.load(ticker, exchange_module=self.exchange)
-        datetime = data["datetime"].iloc[-1]
         stage = self.data_generator.get_stage(data)
         result["ticker"], result["stage"] = ticker, stage
         result["rsi"], result["k_slow"], result["d_slow"] = self.update_args(
@@ -239,28 +238,16 @@ class Trader:
             profit = self.get_profit(ticker)
             result["profit"] = profit
 
-            if stage == 1:
-                sell_condition = all(
-                    [
-                        stochastic_info.stochastic_over == const.over_bought,
-                        rsi_info.rsi_over == const.over_bought,
-                    ]
-                )
-                if sell_condition:
-                    self.sell_and_update(ticker, balance)
-                    return result
-            else:
-                sell_condition = any(
-                    [
-                        rsi_info.rsi_over == const.over_bought,
-                        rsi_info.rsi_cross == const.dead_cross,
-                        stochastic_info.stochastic_over == const.over_bought,
-                        stochastic_info.stochastic_cross == const.dead_cross,
-                    ]
-                )
-                if sell_condition and profit > 0.1:
-                    self.sell_and_update(ticker, balance)
-                    return result
+            sell_condition = all(
+                [
+                    rsi_info.rsi_cross == const.dead_cross,
+                    stochastic_info.stochastic_over == const.over_bought,
+                    stochastic_info.stochastic_cross == const.dead_cross,
+                ]
+            )
+            if sell_condition and profit > 0.1:
+                self.sell_and_update(ticker, balance)
+                return result
         return result
 
     def sell_and_update(self, ticker, balance):
