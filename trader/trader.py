@@ -87,7 +87,7 @@ class Trader:
                 over_time=datetime,
             )
             self.trade_repository.rsi_over(rsi_info)
-        if rsi > 70:
+        if rsi > 65:
             rsi_info = RsiInfo(
                 ticker=ticker,
                 service=self.service,

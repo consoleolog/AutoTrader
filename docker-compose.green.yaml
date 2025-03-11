@@ -13,7 +13,7 @@ services:
       - "8001:8000"
     expose:
       - "8001"
-    command: ["python", "trade.py", "-c", "config.upbit.json", "-p", "8000", "--sp", "5", "--mp", "8", "--lp", "13", "--t", "1h", "--rsi", "14", "--s", "upbit"]
+    command: ["python", "trade.py", "-c", "config.upbit.json", "-p", "8000", "--sp", "5", "--mp", "8", "--lp", "13", "--t", "1h", "--rsi", "9", "--s", "upbit"]
   
   bithumb-green:
     container_name: bithumb-green
