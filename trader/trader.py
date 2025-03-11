@@ -253,7 +253,7 @@ class Trader:
                 stochastic_info.stochastic_over == const.over_bought,
             ])
             if profit < 0 and stage == 1 and cut_condition:
-                self.buy_and_update(ticker)
+                self.sell_and_update(ticker, balance)
                 return result
 
             sell_condition = any(
