@@ -37,7 +37,7 @@ class Trader:
                 over_time=datetime,
             )
             self.trade_repository.stochastic_over(stochastic_info)
-        elif k_slow > 70 and d_slow > 70:
+        elif k_slow > 80 and d_slow > 80:
             stochastic_info = StochasticInfo(
                 ticker=ticker,
                 service=self.service,
@@ -248,9 +248,16 @@ class Trader:
                 self.sell_and_update(ticker, balance)
                 return result
 
-            sell_condition = all(
+            cut_condition = all([
+                stochastic_info.stochastic_cross == const.dead_cross,
+                stochastic_info.stochastic_over == const.over_bought,
+            ])
+            if profit < 0 and stage == 1 and cut_condition:
+                self.buy_and_update(ticker)
+                return result
+
+            sell_condition = any(
                 [
-                    rsi_info.rsi_cross == const.dead_cross,
                     stochastic_info.stochastic_over == const.over_bought,
                     stochastic_info.stochastic_cross == const.dead_cross,
                 ]
