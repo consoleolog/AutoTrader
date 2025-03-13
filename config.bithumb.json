@@ -13,6 +13,7 @@
     "trader": {
         "verbosity": 1,
         "save_dir": "saved/",
+        "price": 30000,
         "price_key": {
             "BTC/KRW": 0.0002,
             "ETH/KRW": 0.008,
@@ -36,7 +37,7 @@
     },
     "server": {
         "verbosity": 2,
-        "interval": 30
+        "interval": 16
     },
     "trade_repository": {
         "type": "TradeRepository",

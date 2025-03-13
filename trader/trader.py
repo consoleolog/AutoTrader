@@ -23,6 +23,8 @@ class Trader:
         self.stochastic = config["trader"]["stochastic"]
         self.rsi = config["trader"]["rsi"]
 
+        self.price = config["trader"]["price"]
+
     def update_stochastic(self, ticker, data):
         k_slow, d_slow = (
             float(data[const.STOCHASTIC.K_SLOW].iloc[-1]),
@@ -237,7 +239,7 @@ class Trader:
                     macd_info.long_cross == const.golden_cross,
                 ]
             )
-            if buy_condition and self.exchange.get_krw() > 30000:
+            if buy_condition and self.exchange.get_krw() > self.price:
                 self.buy_and_update(ticker)
                 return result
 

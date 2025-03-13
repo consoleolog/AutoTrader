@@ -29,5 +29,5 @@ services:
       - "3000:3000"
     expose:
       - "3000"
-    command: ["python", "trade.py", "-c", "config.bithumb.json", "-p", "3000","--sp", "5", "--mp", "8", "--lp", "13", "--t", "30m", "--rsi", "14", "--s", "bithumb"]
+    command: ["python", "trade.py", "-c", "config.bithumb.json", "-p", "3000","--sp", "5", "--mp", "8", "--lp", "13", "--t", "15m", "--rsi", "14", "--s", "bithumb"]
 
