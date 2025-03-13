@@ -20,6 +20,8 @@ class Trader:
         self.service = exchange.service
         self.data_generator = data_generator
         self.trade_repository = trade_repository
+        self.stochastic = config["trader"]["stochastic"]
+        self.rsi = config["trader"]["rsi"]
 
     def update_stochastic(self, ticker, data):
         k_slow, d_slow = (
@@ -27,7 +29,10 @@ class Trader:
             float(data[const.STOCHASTIC.D_SLOW].iloc[-1]),
         )
         datetime = int(data["datetime"].iloc[-1])
-        if k_slow < 30 and d_slow < 30:
+        if (
+            k_slow < self.stochastic["over_sold"]
+            and d_slow < self.stochastic["over_sold"]
+        ):
             stochastic_info = StochasticInfo(
                 ticker=ticker,
                 k_slow=k_slow,
@@ -37,7 +42,10 @@ class Trader:
                 over_time=datetime,
             )
             self.trade_repository.stochastic_over(stochastic_info)
-        elif k_slow > 80 and d_slow > 80:
+        elif (
+            k_slow > self.stochastic["over_bought"]
+            and d_slow > self.stochastic["over_bought"]
+        ):
             stochastic_info = StochasticInfo(
                 ticker=ticker,
                 service=self.service,
@@ -78,7 +86,7 @@ class Trader:
         rsi_gc = data[const.RSI.GC].iloc[-1]
         rsi_dc = data[const.RSI.DC].iloc[-1]
         datetime = int(data["datetime"].iloc[-1])
-        if rsi < 30:
+        if rsi < self.rsi["over_sold"]:
             rsi_info = RsiInfo(
                 ticker=ticker,
                 service=self.service,
@@ -87,7 +95,7 @@ class Trader:
                 over_time=datetime,
             )
             self.trade_repository.rsi_over(rsi_info)
-        if rsi > 65:
+        if rsi > self.rsi["over_bought"]:
             rsi_info = RsiInfo(
                 ticker=ticker,
                 service=self.service,
