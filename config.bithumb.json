@@ -24,6 +24,14 @@
             "BNB/KRW": 0.03,
             "XRP/KRW": 7,
             "DOGE/KRW": 80
+        },
+        "stochastic": {
+            "over_bought": 75,
+            "over_sold": 25
+        },
+        "rsi": {
+            "over_bought": 65,
+            "over_sold": 30
         }
     },
     "server": {

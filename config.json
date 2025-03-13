@@ -15,6 +15,14 @@
             "AAVE/KRW": 0.030,
             "SOL/KRW": 0.08,
             "ENS/KRW": 1
+        },
+        "stochastic": {
+            "over_bought": 80,
+            "over_sold": 25
+        },
+        "rsi": {
+            "over_bought": 65,
+            "over_sold": 30
         }
     },
     "server": {
