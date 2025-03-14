@@ -228,7 +228,7 @@ class Trader:
                     macd_info.long_cross == const.golden_cross,
                 ]
             )
-            if buy_condition and self.exchange.get_krw() > 30000:
+            if buy_condition:
                 self.buy_and_update(ticker)
                 return result
         else:
@@ -243,7 +243,7 @@ class Trader:
                     macd_info.long_cross == const.golden_cross,
                 ]
             )
-            if buy_condition and self.exchange.get_krw() > self.price:
+            if buy_condition :
                 self.buy_and_update(ticker)
                 return result
 
@@ -296,17 +296,24 @@ class Trader:
                 (float(trade_info.price) + self.exchange.get_current_price(ticker)) / 2,
                 "bid",
             )
+            if self.service == "upbit":
+                price = self.config["trader"]["price"] * 1.5
+            else:
+                price = self.config["trader"]["price_key"][ticker] * 1.5
         else:
             self.trade_repository.update_trade_info(
                 self.service, ticker, self.exchange.get_current_price(ticker), "bid"
             )
+            if self.service == "upbit":
+                price = self.config["trader"]["price"]
+            else:
+                price = self.config["trader"]["price_key"][ticker]
 
-        if self.service == "upbit":
-            price = self.config["trader"]["price"]
+        krw = self.exchange.get_krw()
+        if self.service == "upbit" and krw > price:
             self.exchange.create_buy_order(ticker, price)
-        elif self.service == "bithumb":
-            price_keys = self.config["trader"]["price_key"]
-            self.exchange.create_buy_order(ticker, price_keys[ticker])
+        elif self.service == "bithumb" and krw > price:
+            self.exchange.create_buy_order(ticker, price)
 
     def loop(self, tickers):
         with ThreadPoolExecutor(max_workers=4) as executor:
