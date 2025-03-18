@@ -13,7 +13,7 @@
     "trader": {
         "verbosity": 1,
         "save_dir": "saved/",
-        "price": 50000,
+        "price": 100000,
         "stochastic": {
             "over_bought": 75,
             "over_sold": 25
