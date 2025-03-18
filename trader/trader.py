@@ -266,7 +266,6 @@ class Trader:
                 [
                     stochastic_info.stochastic_over == const.over_bought,
                     stochastic_info.stochastic_cross == const.dead_cross,
-                    rsi_info.rsi_cross == const.dead_cross,
                 ]
             )
             if profit < 0 and sell_condition and stage == 1:
