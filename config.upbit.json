@@ -20,7 +20,7 @@
         },
         "rsi": {
             "over_bought": 65,
-            "over_sold": 30
+            "over_sold": 31
         }
     },
     "server": {
