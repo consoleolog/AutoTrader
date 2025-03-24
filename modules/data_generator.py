@@ -4,9 +4,21 @@ import constants as const
 
 
 class DataGenerator:
-    def __init__(self, short_period, mid_period, long_period, rsi_period, timeframe):
+    def __init__(
+            self,
+            short_period,
+            mid_period,
+            long_period,
+            rsi_period,
+            k_len,
+            k_smooth,
+            d_smooth,
+            timeframe
+    ):
         self.s, self.m, self.l = short_period, mid_period, long_period
         self.rsi_p = rsi_period
+        self.k_len = k_len
+        self.k_smooth, self.d_smooth = k_smooth, d_smooth
         self.timeframe = timeframe
 
     def get_stage(self, data):
@@ -81,7 +93,7 @@ class DataGenerator:
             data[const.STOCHASTIC.D_SLOW],
             data[const.STOCHASTIC.GC],
             data[const.STOCHASTIC.DC],
-        ) = Stochastic(data, 14, 3, 3, returns=("k_slow", "d_slow", "gc", "dc"))
+        ) = Stochastic(data, self.k_len, self.k_smooth, self.d_smooth, returns=("k_slow", "d_slow", "gc", "dc"))
 
         return data
 
@@ -107,8 +119,8 @@ def RSI(data, period, signal_period=9, returns=("val",)):
     delta = data["close"].diff()
     U = delta.clip(lower=0)
     D = -delta.clip(upper=0)
-    AU = U.ewm(com=period - 1, min_periods=1).mean()
-    AD = D.ewm(com=period - 1, min_periods=1).mean()
+    AU = U.ewm(com=period - 1).mean()
+    AD = D.ewm(com=period - 1).mean()
 
     rs = AU / AD
     rs.replace([np.inf, -np.inf], np.nan, inplace=True)
@@ -124,13 +136,13 @@ def RSI(data, period, signal_period=9, returns=("val",)):
 
 
 def Stochastic(data, k_len=10, k_smooth=6, d_smooth=6, returns=("k_slow", "d_slow")):
-    low_price = data["low"].rolling(window=k_len, min_periods=1).min()
-    high_price = data["high"].rolling(window=k_len, min_periods=1).max()
+    low_price = data["low"].rolling(window=k_len).min()
+    high_price = data["high"].rolling(window=k_len).max()
     k_fast = ((data["close"] - low_price) / (high_price - low_price)) * 100.0
 
-    k_slow = k_fast.rolling(window=k_smooth, min_periods=1).mean()
-    d_fast = k_fast.rolling(window=k_smooth, min_periods=1).mean()
-    d_slow = d_fast.rolling(window=d_smooth, min_periods=1).mean()
+    k_slow = k_fast.rolling(window=k_smooth).mean()
+    d_fast = k_fast.rolling(window=k_smooth).mean()
+    d_slow = d_fast.rolling(window=d_smooth).mean()
     gc = (k_slow.shift(1) < d_slow.shift(1)) & (k_slow > d_slow)
     dc = (k_slow.shift(1) > d_slow.shift(1)) & (k_slow < d_slow)
     variables = locals()

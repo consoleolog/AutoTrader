@@ -77,7 +77,16 @@ if __name__ == "__main__":
             target="data_generator;args;long_period",
         ),
         CustomArgs(
-            ["--rsi", "--rsi_period"], type=int, target="data_generator;args;rsi_period"
+            ["--rp", "--rsi_period"], type=int, target="data_generator;args;rsi_period"
+        ),
+        CustomArgs(
+            ["--kl", "--k_len"], type=int, target="data_generator;args;k_len"
+        ),
+        CustomArgs(
+            ["--ks", "--k_smooth"], type=int, target="data_generator;args;k_smooth"
+        ),
+        CustomArgs(
+            ["--ds", "--d_smooth"], type=int, target="data_generator;args;d_smooth"
         ),
         CustomArgs(
             ["--t", "--timeframe"], type=str, target="data_generator;args;timeframe"

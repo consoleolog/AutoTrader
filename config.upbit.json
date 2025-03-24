@@ -19,13 +19,13 @@
             "over_sold": 25
         },
         "rsi": {
-            "over_bought": 65,
-            "over_sold": 31
+            "over_bought": 63,
+            "over_sold": 30
         }
     },
     "server": {
         "verbosity": 2,
-        "interval": 16
+        "interval": 60
     },
     "trade_repository": {
         "type": "TradeRepository",
@@ -33,10 +33,21 @@
     },
     "exchange": {
         "type": "Exchange",
-        "args": {}
+        "args": {
+            "service": "upbit"
+        }
     },
     "data_generator": {
         "type": "DataGenerator",
-        "args": {}
+        "args": {
+            "short_period": 5,
+            "mid_period": 20,
+            "long_period": 40,
+            "rsi_period": 14,
+            "k_len": 14,
+            "k_smooth": 4,
+            "d_smooth": 4,
+            "timeframe": "1h"
+        }
     }
 }
