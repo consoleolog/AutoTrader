@@ -20,12 +20,12 @@
         },
         "rsi": {
             "over_bought": 63,
-            "over_sold": 30
+            "over_sold": 32
         }
     },
     "server": {
         "verbosity": 2,
-        "interval": 60
+        "interval": 15
     },
     "trade_repository": {
         "type": "TradeRepository",
@@ -41,13 +41,13 @@
         "type": "DataGenerator",
         "args": {
             "short_period": 5,
-            "mid_period": 20,
-            "long_period": 40,
+            "mid_period": 8,
+            "long_period": 13,
             "rsi_period": 14,
             "k_len": 14,
             "k_smooth": 4,
             "d_smooth": 4,
-            "timeframe": "1h"
+            "timeframe": "15m"
         }
     }
 }
