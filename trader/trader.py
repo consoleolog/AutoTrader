@@ -220,7 +220,9 @@ class Trader:
         if trade_info.status == "bid":
             buy_condition = all(
                 [
+                    rsi_info.rsi_over == const.golden_cross,
                     stochastic_info.stochastic_over == const.over_sold,
+                    stochastic_info.stochastic_over == const.golden_cross,
                     macd_info.short_cross == const.golden_cross,
                     macd_info.mid_cross == const.golden_cross,
                     macd_info.long_cross == const.golden_cross,
@@ -233,7 +235,9 @@ class Trader:
             buy_condition = all(
                 [
                     rsi_info.rsi_over == const.over_sold,
+                    rsi_info.rsi_cross == const.golden_cross,
                     stochastic_info.stochastic_over == const.over_sold,
+                    stochastic_info.stochastic_cross == const.golden_cross,
                     macd_info.short_cross == const.golden_cross,
                     macd_info.mid_cross == const.golden_cross,
                     macd_info.long_cross == const.golden_cross,
