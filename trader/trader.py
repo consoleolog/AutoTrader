@@ -296,9 +296,9 @@ class Trader:
                 "bid",
             )
             if self.service == "upbit":
-                price = self.config["trader"]["price"] * 1.5
+                price = self.config["trader"]["price"] * 2
             else:
-                price = self.config["trader"]["price_key"][ticker] * 1.5
+                price = self.config["trader"]["price_key"][ticker] * 2
         else:
             self.trade_repository.update_trade_info(
                 self.service, ticker, self.exchange.get_current_price(ticker), "bid"
