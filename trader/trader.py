@@ -217,7 +217,8 @@ class Trader:
         macd_info = self.trade_repository.get_macd(ticker, self.service)
 
         trade_info = self.trade_repository.get_info(ticker, self.service)
-        if trade_info.status == "bid":
+        balance = self.exchange.get_balance(ticker)
+        if balance != 0:
             buy_condition = all(
                 [
                     rsi_info.rsi_over == const.golden_cross,
@@ -249,7 +250,6 @@ class Trader:
                 self.buy_and_update(ticker)
                 return result
 
-        balance = self.exchange.get_balance(ticker)
         if balance != 0:
             profit = self.get_profit(ticker)
             result["profit"] = profit
