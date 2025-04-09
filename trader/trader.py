@@ -226,6 +226,7 @@ class Trader:
                     macd_info.short_cross == const.golden_cross,
                     macd_info.mid_cross == const.golden_cross,
                     macd_info.long_cross == const.golden_cross,
+                    stage == 4
                 ]
             )
             if buy_condition:
@@ -241,6 +242,7 @@ class Trader:
                     macd_info.short_cross == const.golden_cross,
                     macd_info.mid_cross == const.golden_cross,
                     macd_info.long_cross == const.golden_cross,
+                    stage == 4
                 ]
             )
             if buy_condition :
