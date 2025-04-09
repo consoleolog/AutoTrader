@@ -25,7 +25,7 @@
     },
     "server": {
         "verbosity": 2,
-        "interval": 15
+        "interval": 30
     },
     "trade_repository": {
         "type": "TradeRepository",
@@ -47,7 +47,7 @@
             "k_len": 14,
             "k_smooth": 3,
             "d_smooth": 4,
-            "timeframe": "15m"
+            "timeframe": "30m"
         }
     }
 }
