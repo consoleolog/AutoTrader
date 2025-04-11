@@ -7,13 +7,14 @@
         "SOL/KRW",
         "AAVE/KRW",
         "BSV/KRW",
-        "ENS/KRW"
+        "ENS/KRW",
+        "COMP/KRW"
     ],
     "save_dir": "saved/",
     "trader": {
         "verbosity": 1,
         "save_dir": "saved/",
-        "price": 100000,
+        "price": 150000,
         "stochastic": {
             "over_bought": 75,
             "over_sold": 25
