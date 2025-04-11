@@ -2,6 +2,7 @@
 
 UPBIT_CONTAINER_NAME=upbit
 IMAGE_NAME=autotrader
+IMAGE_ID=$(sudo docker images -q $IMAGE_NAME)
 
 EXIST_UPBIT_BLUE=$(sudo docker-compose -p "$UPBIT_CONTAINER_NAME-blue" -f docker-compose.blue.yaml ps | grep Up)
 
@@ -20,8 +21,6 @@ else
     UPBIT_BEFORE_COMPOSE_COLOR="blue"
     UPBIT_AFTER_COMPOSE_COLOR="green"
 fi
-
-IMAGE_ID=$(sudo docker images -q $IMAGE_NAME)
 
 sleep 5
 
