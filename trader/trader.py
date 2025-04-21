@@ -25,6 +25,16 @@ class Trader:
 
         self.price = config["trader"]["price"]
 
+        self.safe_ticker = [
+            "BTC/KRW",
+            "ETH/KRW",
+            "BCH/KRW",
+            "SOL/KRW",
+            "AAVE/KRW",
+            "BSV/KRW",
+            "ENS/KRW"
+        ]
+
     def update_stochastic(self, ticker, data):
         k_slow, d_slow = (
             float(data[const.STOCHASTIC.K_SLOW].iloc[-1]),
@@ -216,7 +226,6 @@ class Trader:
         stochastic_info = self.trade_repository.get_stochastic(ticker, self.service)
         macd_info = self.trade_repository.get_macd(ticker, self.service)
 
-        trade_info = self.trade_repository.get_info(ticker, self.service)
         balance = self.exchange.get_balance(ticker)
         if balance != 0:
             buy_condition = all(
@@ -227,7 +236,7 @@ class Trader:
                     macd_info.short_cross == const.golden_cross,
                     macd_info.mid_cross == const.golden_cross,
                     macd_info.long_cross == const.golden_cross,
-                    stage == 4
+                    stage == 4,
                 ]
             )
             if buy_condition:
@@ -243,10 +252,10 @@ class Trader:
                     macd_info.short_cross == const.golden_cross,
                     macd_info.mid_cross == const.golden_cross,
                     macd_info.long_cross == const.golden_cross,
-                    stage == 4
+                    stage == 4,
                 ]
             )
-            if buy_condition :
+            if buy_condition:
                 self.buy_and_update(ticker)
                 return result
 
@@ -264,17 +273,25 @@ class Trader:
                 self.sell_and_update(ticker, balance)
                 return result
 
-            if profit < 0 and stage == 1 and all([
-                stochastic_info.stochastic_over == const.over_bought,
-                stochastic_info.stochastic_cross == const.dead_cross,
-            ]):
+            if (
+                profit < 0
+                and stage == 1
+                and all(
+                    [
+                        stochastic_info.stochastic_over == const.over_bought,
+                        stochastic_info.stochastic_cross == const.dead_cross,
+                    ]
+                )
+            ):
                 self.sell_and_update(ticker, profit)
                 return result
 
-            if profit > 0.1 and any([
-                stochastic_info.stochastic_over == const.over_bought,
-                stochastic_info.stochastic_cross == const.dead_cross,
-            ]):
+            if profit > 0.1 and any(
+                [
+                    stochastic_info.stochastic_over == const.over_bought,
+                    stochastic_info.stochastic_cross == const.dead_cross,
+                ]
+            ):
                 self.sell_and_update(ticker, balance)
                 return result
         return result
@@ -288,32 +305,47 @@ class Trader:
 
     def buy_and_update(self, ticker):
         trade_info = self.trade_repository.get_info(ticker, self.service)
-        self.trade_repository.refresh(ticker, self.service)
-        # 추가 매수라면 매수 가격의 평균으로 업데이트
+        krw = self.exchange.get_krw()
+
         if trade_info.status == "bid":
+            if self.service == "upbit":
+                price = (
+                    self.config["trader"]["price"] * 2
+                    if ticker in self.safe_ticker
+                    else 100000
+                )
+            else:
+                price = (
+                    self.config["trader"]["price_key"][ticker] * 2
+                    if ticker in self.safe_ticker
+                    else self.config["trader"]["price_key"][ticker]
+                )
+            save_price = (
+                float(trade_info.price) + self.exchange.get_current_price(ticker)
+            ) / 2
+        else:
+            if self.service == "upbit":
+                price = (
+                    self.config["trader"]["price"]
+                    if ticker in self.safe_ticker
+                    else 50000
+                )
+            else:
+                price = (
+                    self.config["trader"]["price_key"][ticker]
+                    if ticker in self.safe_ticker
+                    else self.config["trader"]["price_key"][ticker] * 0.5
+                )
+            save_price = self.exchange.get_current_price(ticker)
+
+        if krw > price:
+            self.trade_repository.refresh(ticker, self.service)
             self.trade_repository.update_trade_info(
                 self.service,
                 ticker,
-                (float(trade_info.price) + self.exchange.get_current_price(ticker)) / 2,
+                save_price,
                 "bid",
             )
-            if self.service == "upbit":
-                price = self.config["trader"]["price"] * 2
-            else:
-                price = self.config["trader"]["price_key"][ticker] * 2
-        else:
-            self.trade_repository.update_trade_info(
-                self.service, ticker, self.exchange.get_current_price(ticker), "bid"
-            )
-            if self.service == "upbit":
-                price = self.config["trader"]["price"]
-            else:
-                price = self.config["trader"]["price_key"][ticker]
-
-        krw = self.exchange.get_krw()
-        if self.service == "upbit" and krw > price:
-            self.exchange.create_buy_order(ticker, price)
-        elif self.service == "bithumb" and krw > price:
             self.exchange.create_buy_order(ticker, price)
 
     def loop(self, tickers):

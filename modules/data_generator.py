@@ -5,15 +5,15 @@ import constants as const
 
 class DataGenerator:
     def __init__(
-            self,
-            short_period,
-            mid_period,
-            long_period,
-            rsi_period,
-            k_len,
-            k_smooth,
-            d_smooth,
-            timeframe
+        self,
+        short_period,
+        mid_period,
+        long_period,
+        rsi_period,
+        k_len,
+        k_smooth,
+        d_smooth,
+        timeframe,
     ):
         self.s, self.m, self.l = short_period, mid_period, long_period
         self.rsi_p = rsi_period
@@ -93,7 +93,13 @@ class DataGenerator:
             data[const.STOCHASTIC.D_SLOW],
             data[const.STOCHASTIC.GC],
             data[const.STOCHASTIC.DC],
-        ) = Stochastic(data, self.k_len, self.k_smooth, self.d_smooth, returns=("k_slow", "d_slow", "gc", "dc"))
+        ) = Stochastic(
+            data,
+            self.k_len,
+            self.k_smooth,
+            self.d_smooth,
+            returns=("k_slow", "d_slow", "gc", "dc"),
+        )
 
         return data
 

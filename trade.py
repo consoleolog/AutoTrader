@@ -79,9 +79,7 @@ if __name__ == "__main__":
         CustomArgs(
             ["--rp", "--rsi_period"], type=int, target="data_generator;args;rsi_period"
         ),
-        CustomArgs(
-            ["--kl", "--k_len"], type=int, target="data_generator;args;k_len"
-        ),
+        CustomArgs(["--kl", "--k_len"], type=int, target="data_generator;args;k_len"),
         CustomArgs(
             ["--ks", "--k_smooth"], type=int, target="data_generator;args;k_smooth"
         ),

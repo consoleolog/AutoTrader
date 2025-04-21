@@ -30,5 +30,5 @@ if [ -n "$UPBIT_EXIST_AFTER" ]; then
     echo "------------------"
     echo " upbit $UPBIT_BEFORE_COMPOSE_COLOR down"
     echo "------------------"
-   sudo docker rmi "$IMAGE_ID"
+#   sudo docker rmi "$IMAGE_ID"
 fi

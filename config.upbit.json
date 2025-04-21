@@ -10,7 +10,13 @@
         "ENS/KRW",
         "COMP/KRW",
         "AVAX/KRW",
-        "ETC/KRW"
+        "ETC/KRW",
+        "EGLD/KRW",
+        "LINK/KRW",
+        "AUCTION/KRW",
+        "INJ/KRW",
+        "TRUMP/KRW",
+        "STRIKE/KRW"
     ],
     "save_dir": "saved/",
     "trader": {
