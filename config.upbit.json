@@ -8,19 +8,21 @@
         "AAVE/KRW",
         "BSV/KRW",
         "ENS/KRW",
-        "COMP/KRW"
+        "COMP/KRW",
+        "AVAX/KRW",
+        "ETC/KRW"
     ],
     "save_dir": "saved/",
     "trader": {
         "verbosity": 1,
         "save_dir": "saved/",
-        "price": 150000,
+        "price": 300000,
         "stochastic": {
             "over_bought": 75,
             "over_sold": 25
         },
         "rsi": {
-            "over_bought": 63,
+            "over_bought": 60,
             "over_sold": 30
         }
     },
