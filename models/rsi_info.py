@@ -22,7 +22,7 @@ class RsiInfo:
         return cls(
             ticker=df["ticker"],
             service=df["service"],
-            rsi=float(df["rsi"]),
+            rsi=float(0) if df["rsi"] is None else float(df["rsi"]),
             rsi_over=df["rsi_over"],
             over_time=df["over_time"],
             rsi_cross=df["rsi_cross"],
