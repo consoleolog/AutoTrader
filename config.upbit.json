@@ -14,7 +14,7 @@
     "trader": {
         "verbosity": 1,
         "save_dir": "saved/",
-        "price": 700000,
+        "price": 500000,
         "stochastic": {
             "over_bought": 75,
             "over_sold": 25
@@ -41,13 +41,13 @@
     "data_generator": {
         "type": "DataGenerator",
         "args": {
-            "short_period": 8,
-            "mid_period": 13,
-            "long_period": 26,
+            "short_period": 5,
+            "mid_period": 8,
+            "long_period": 13,
             "rsi_period": 14,
             "k_len": 14,
             "k_smooth": 3,
-            "d_smooth": 4,
+            "d_smooth": 3,
             "timeframe": "30m"
         }
     }
