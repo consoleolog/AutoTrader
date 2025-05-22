@@ -23,18 +23,6 @@ class Trader:
         self.stochastic = config["trader"]["stochastic"]
         self.rsi = config["trader"]["rsi"]
 
-        self.price = config["trader"]["price"]
-
-        self.safe_ticker = [
-            "BTC/KRW",
-            "ETH/KRW",
-            "BCH/KRW",
-            "SOL/KRW",
-            "AAVE/KRW",
-            "BSV/KRW",
-            "ENS/KRW"
-        ]
-
     def update_stochastic(self, ticker, data):
         k_slow, d_slow = (
             float(data[const.STOCHASTIC.K_SLOW].iloc[-1]),
@@ -308,34 +296,12 @@ class Trader:
         krw = self.exchange.get_krw()
 
         if trade_info.status == "bid":
-            if self.service == "upbit":
-                price = (
-                    self.config["trader"]["price"] * 2
-                    if ticker in self.safe_ticker
-                    else 100000
-                )
-            else:
-                price = (
-                    self.config["trader"]["price_key"][ticker] * 2
-                    if ticker in self.safe_ticker
-                    else self.config["trader"]["price_key"][ticker]
-                )
+            price = self.config["trader"]["price_key"][ticker] * 1.5
             save_price = (
                 float(trade_info.price) + self.exchange.get_current_price(ticker)
             ) / 2
         else:
-            if self.service == "upbit":
-                price = (
-                    self.config["trader"]["price"]
-                    if ticker in self.safe_ticker
-                    else 50000
-                )
-            else:
-                price = (
-                    self.config["trader"]["price_key"][ticker]
-                    if ticker in self.safe_ticker
-                    else self.config["trader"]["price_key"][ticker] * 0.5
-                )
+            price = self.config["trader"]["price_key"][ticker]
             save_price = self.exchange.get_current_price(ticker)
 
         if krw > price:
