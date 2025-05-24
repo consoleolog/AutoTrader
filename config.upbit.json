@@ -51,8 +51,8 @@
         "type": "DataGenerator",
         "args": {
             "short_period": 5,
-            "mid_period": 10,
-            "long_period": 20,
+            "mid_period": 8,
+            "long_period": 13,
             "rsi_period": 14,
             "k_len": 14,
             "k_smooth": 7,
