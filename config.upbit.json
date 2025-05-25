@@ -55,8 +55,8 @@
             "long_period": 13,
             "rsi_period": 14,
             "k_len": 14,
-            "k_smooth": 7,
-            "d_smooth": 7,
+            "k_smooth": 3,
+            "d_smooth": 4,
             "timeframe": "30m"
         }
     }
