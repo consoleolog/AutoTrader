@@ -251,37 +251,22 @@ class Trader:
             profit = self.get_profit(ticker)
             result["profit"] = profit
 
-            root_sell_condition = all(
-                [
-                    stochastic_info.stochastic_over == const.over_bought,
-                    rsi_info.rsi_over == const.over_bought,
-                ]
-            )
-            if root_sell_condition and stage == 1:
-                self.sell_and_update(ticker, balance)
-                return result
-
             if (
                 profit < 0
-                and stage == 1
-                and all(
-                    [
-                        stochastic_info.stochastic_over == const.over_bought,
-                        stochastic_info.stochastic_cross == const.dead_cross,
-                    ]
-                )
+                and all([
+                    macd_info.short_cross == const.dead_cross,
+                    macd_info.mid_cross == const.dead_cross,
+                    macd_info.long_cross == const.dead_cross,
+                    stage not in [5, 6, 1]
+                ])
             ):
                 self.sell_and_update(ticker, profit)
                 return result
 
-            if profit > 0.1 and any(
-                [
-                    stochastic_info.stochastic_over == const.over_bought,
-                    stochastic_info.stochastic_cross == const.dead_cross,
-                ]
-            ):
+            if profit > 0.1 and stochastic_info.stochastic_cross == const.dead_cross:
                 self.sell_and_update(ticker, balance)
                 return result
+
         return result
 
     def sell_and_update(self, ticker, balance):
