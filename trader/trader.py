@@ -263,7 +263,10 @@ class Trader:
                 self.sell_and_update(ticker, profit)
                 return result
 
-            if profit > 0.1 and stochastic_info.stochastic_cross == const.dead_cross:
+            if profit > 0.1 and all([
+                stochastic_info.stochastic_cross == const.dead_cross,
+                rsi_info.rsi_cross == const.dead_cross,
+            ]):
                 self.sell_and_update(ticker, balance)
                 return result
 
