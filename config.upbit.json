@@ -15,14 +15,14 @@
         "verbosity": 1,
         "save_dir": "saved/",
         "price_key": {
-            "BTC/KRW" : 500000,
-            "ETH/KRW" : 500000,
-            "BCH/KRW" : 500000,
-            "SOL/KRW" : 500000,
-            "AAVE/KRW": 500000,
-            "BSV/KRW" : 500000,
-            "ENS/KRW" : 500000,
-            "COMP/KRW": 500000
+            "BTC/KRW" : 800000,
+            "ETH/KRW" : 800000,
+            "BCH/KRW" : 800000,
+            "SOL/KRW" : 800000,
+            "AAVE/KRW": 800000,
+            "BSV/KRW" : 800000,
+            "ENS/KRW" : 800000,
+            "COMP/KRW": 800000
         },
         "stochastic": {
             "over_bought": 75,
