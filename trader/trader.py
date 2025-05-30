@@ -252,22 +252,9 @@ class Trader:
             result["profit"] = profit
 
             if (
-                profit < 0
-                and all([
-                    macd_info.short_cross == const.dead_cross,
-                    macd_info.mid_cross == const.dead_cross,
-                    macd_info.long_cross == const.dead_cross,
-                    stage not in [5, 6, 1]
-                ])
+                stochastic_info.stochastic_cross == const.dead_cross and
+                rsi_info.rsi_cross == const.dead_cross
             ):
-                self.sell_and_update(ticker, profit)
-                return result
-
-            if profit > 0.1 and all([
-                stochastic_info.stochastic_cross == const.dead_cross,
-                rsi_info.rsi_cross == const.dead_cross,
-                # stage == 1
-            ]):
                 self.sell_and_update(ticker, balance)
                 return result
 
