@@ -218,7 +218,7 @@ class Trader:
         if balance != 0:
             buy_condition = all(
                 [
-                    rsi_info.rsi_over == const.golden_cross,
+                    rsi_info.rsi_cross == const.golden_cross,
                     stochastic_info.stochastic_over == const.over_sold,
                     stochastic_info.stochastic_over == const.golden_cross,
                     macd_info.short_cross == const.golden_cross,
@@ -226,7 +226,6 @@ class Trader:
                     macd_info.long_cross == const.golden_cross,
                     stochastic_info.d_slow < 40,
                     stochastic_info.k_slow < 40,
-                    # stage != 4,
                 ]
             )
             if buy_condition:
@@ -244,7 +243,6 @@ class Trader:
                     macd_info.long_cross == const.golden_cross,
                     stochastic_info.d_slow < 40,
                     stochastic_info.k_slow < 40,
-                    # stage != 4,
                 ]
             )
             if buy_condition:
