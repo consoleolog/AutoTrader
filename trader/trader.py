@@ -224,8 +224,6 @@ class Trader:
                     macd_info.short_cross == const.golden_cross,
                     macd_info.mid_cross == const.golden_cross,
                     macd_info.long_cross == const.golden_cross,
-                    stochastic_info.d_slow < 40,
-                    stochastic_info.k_slow < 40,
                 ]
             )
             if buy_condition:
@@ -254,8 +252,16 @@ class Trader:
             result["profit"] = profit
 
             if (
-                stochastic_info.stochastic_cross == const.dead_cross and
-                rsi_info.rsi_cross == const.dead_cross
+                all([
+                    stochastic_info.stochastic_cross == const.dead_cross,
+                    rsi_info.rsi_cross == const.dead_cross,
+                ])
+                or
+                all([
+                    macd_info.short_cross == const.dead_cross,
+                    macd_info.mid_cross == const.dead_cross,
+                    macd_info.long_cross == const.dead_cross,
+                ])
             ):
                 self.sell_and_update(ticker, balance)
                 return result
