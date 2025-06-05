@@ -256,7 +256,7 @@ class Trader:
                     stochastic_info.stochastic_cross == const.dead_cross,
                     rsi_info.rsi_cross == const.dead_cross,
                 ])
-                or
+                and
                 all([
                     macd_info.short_cross == const.dead_cross,
                     macd_info.mid_cross == const.dead_cross,
