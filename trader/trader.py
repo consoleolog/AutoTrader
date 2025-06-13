@@ -258,11 +258,11 @@ class Trader:
                 self.sell_and_update(ticker, balance)
                 return result
 
-            if profit < 0 and all([
-                    macd_info.short_cross == const.dead_cross,
-                    macd_info.mid_cross == const.dead_cross,
-                    macd_info.long_cross == const.dead_cross,
-            ]):
+            # if profit < 0 and all([
+            #         macd_info.short_cross == const.dead_cross,
+            #         macd_info.mid_cross == const.dead_cross,
+            #         macd_info.long_cross == const.dead_cross,
+            # ]):
                 self.sell_and_update(ticker, balance)
                 return result
 
