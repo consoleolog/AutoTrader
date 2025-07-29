@@ -282,7 +282,7 @@ class Trader:
         krw = self.exchange.get_krw()
 
         if trade_info.status == "bid":
-            price = self.config["trader"]["price_key"][ticker] * 1.5
+            price = self.config["trader"]["price_key"][ticker] * 2
             save_price = (
                 float(trade_info.price) + self.exchange.get_current_price(ticker)
             ) / 2
