@@ -1,5 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
 from pprint import pprint
+from collections import defaultdict
 
 import constants as const
 from models import MacdInfo, RsiInfo, StochasticInfo
@@ -22,6 +23,10 @@ class Trader:
         self.trade_repository = trade_repository
         self.stochastic = config["trader"]["stochastic"]
         self.rsi = config["trader"]["rsi"]
+        self.tickers = self.config["trader"]["price_key"].keys()
+        self.counts = defaultdict(lambda: 1)
+        for ticker in self.tickers:
+            self.counts[ticker] = 1
 
     def update_stochastic(self, ticker, data):
         k_slow, d_slow = (
@@ -282,7 +287,8 @@ class Trader:
         krw = self.exchange.get_krw()
 
         if trade_info.status == "bid":
-            price = self.config["trader"]["price_key"][ticker] * 2
+            price = self.config["trader"]["price_key"][ticker] * 2 * self.counts[ticker]
+            self.counts[ticker] += 1
             save_price = (
                 float(trade_info.price) + self.exchange.get_current_price(ticker)
             ) / 2
